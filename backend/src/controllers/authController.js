@@ -17,32 +17,19 @@ exports.getRoles = async (req, res) => {
     const { userId } = req;
 
     const query = `
-    SELECT DISTINCT role
-    FROM (
-        SELECT 'coe' AS role
-        FROM master_coe
-        WHERE faculty = ?
-        UNION
-        SELECT 'hod' AS role
-        FROM master_hod
-        WHERE faculty = ?
-        UNION
-        SELECT 'hod' AS role
-        FROM master_faculty
-        JOIN master_hod ON master_hod.faculty = master_faculty.id
-        WHERE master_faculty.id = ?
-        UNION
-        SELECT 'faculty' AS role
-        FROM master_faculty
-        WHERE id = ?
-    ) AS roles_table;
+    SELECT * FROM master_users WHERE  id =?
     `;
 
     try {
-        const [results] = await pool.query(query, [userId, userId, userId, userId]);
+        const [results] = await pool.query(query, [userId]);
         // Convert results to list format
-        const roles = results.map(row => row.role);
-        res.json({ roles });
+        if(results.length>0){
+            res.json({ role:'user' });
+        }
+        else{
+            res.status(401).json({role:'unauthorized'})
+        }
+        
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -50,9 +37,10 @@ exports.getRoles = async (req, res) => {
 
 exports.login = async(req,res)=>{
     const {email} = req.body;
-    const getUserDetailsQuery = `SELECT * FROM master_faculty WHERE email  = ?`;
+    const getUserDetailsQuery = `SELECT * FROM master_users WHERE email  = ?`;
     try {
         const[results] = await pool.query(getUserDetailsQuery,[email]);
+        
         const token  = jwt.sign({userData:results},'sembit001',{expiresIn:'1h'});
         res.json(token)
     } catch (error) {

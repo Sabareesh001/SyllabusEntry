@@ -30,9 +30,9 @@ export function AppRoutes(props) {
 
   // Create a separate ProtectedRoutes wrapper for Layout
   const layoutWrapper = {
-    path: "/paperallocation",
+    path: "/",
     element: (
-      <ProtectedRoutes setLoading={setLoading} authorizedRole={"faculty"}>
+      <ProtectedRoutes setLoading={setLoading} authorizedRole={"user"}>
         <Layout
           setLoading={setLoading}
           loading={loading}

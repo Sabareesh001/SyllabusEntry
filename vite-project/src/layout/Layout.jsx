@@ -55,9 +55,12 @@ function Layout({ title, userDetails, loading, setLoading }) {
         };
         setTimeout(navigateLogin, 1000);
     };
-
+    
+        console.log("Reached Layout jsx")
+    
     return (
         <div className="layoutContainer">
+           
             <div ref={sidebarRef} className={isOpen ? "layoutSidebarOpen" : "layoutSidebar"}>
                 <Sidebar setIsOpen={setIsOpen} setLoading={setLoading} />
             </div>

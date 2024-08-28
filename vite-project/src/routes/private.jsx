@@ -1,6 +1,11 @@
+import SyllabusEntry from "../pages/syllabusEntry/SyllabusEntry";
 
 export const privateRoutes =(setTitle)=> [
-    
+    {
+        path:'syllabusentry',
+        element:<SyllabusEntry/>,
+        authorizedRole:'user'
+    }
 
 ]
 

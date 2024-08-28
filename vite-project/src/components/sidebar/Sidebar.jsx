@@ -87,7 +87,7 @@ const handleLogout = ()=>{
         </Link>
        
         <ul>
-          { role.includes('coe') &&
+          { role?.includes('coe') &&
  <li>
  <div className={`listItem ${open.COE ? 'active' : ''}`} onClick={() => toggleDropdown('COE')}>
    <School className="icon" />
@@ -121,7 +121,7 @@ const handleLogout = ()=>{
 </li>
           }
          
-      { role.includes('hod') &&
+      { role?.includes('hod') &&
  <li>
  <div className={`listItem ${open.HOD ? 'active' : ''}`} onClick={() => toggleDropdown('HOD')}>
    <People className="icon" />
@@ -143,7 +143,7 @@ const handleLogout = ()=>{
    </div>
  )}
 </li>
-      }  { role.includes('faculty') &&
+      }  { role?.includes('faculty') &&
           <li>
             <div className={`listItem ${open.Faculty ? 'active' : ''}`} onClick={() => toggleDropdown('Faculty')}>
               <Book className="icon" />

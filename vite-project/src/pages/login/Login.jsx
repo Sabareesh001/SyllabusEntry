@@ -13,7 +13,7 @@ const Login = ({setLoading})=>{
     const [cookies, setCookie] = useCookies(['user','auth'])
     useEffect(()=>{
          if(cookies.auth){
-            navigate('/paperallocation',{replace:true});
+            navigate('/syllabusentry',{replace:true});
          }
     },[cookies.auth])
  
@@ -27,7 +27,7 @@ const Login = ({setLoading})=>{
          axios.post(`${apiHost}/auth/login`,{email:email}).then((res)=>{
             console.log(res.data)
             setCookie('auth',res.data,{path:'/'});
-            navigate('/paperallocation',{replace:true});
+            navigate('/syllabusentry',{replace:true});
         })
         
     }

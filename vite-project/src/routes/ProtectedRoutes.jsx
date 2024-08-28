@@ -9,6 +9,7 @@ const ProtectedRoutes = ({ authorizedRole, children, setLoading }) => {
   const [role, setRole] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  console.log("Reached Protected Routes jsx")
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -18,7 +19,8 @@ const ProtectedRoutes = ({ authorizedRole, children, setLoading }) => {
               auth: cookies.auth,
             },
           });
-          setRole(response.data.roles);
+          
+          setRole(response.data.role);
         } else {
           setRole([]);
         }
@@ -56,6 +58,7 @@ const ProtectedRoutes = ({ authorizedRole, children, setLoading }) => {
     };
     const timeout = setTimeout(navigateOut, 1000);
   } else {
+    console.log(role)
     return role != null ? children : null;
   }
 
