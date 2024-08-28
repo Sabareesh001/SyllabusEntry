@@ -1,3 +1,17 @@
 .syllabusEntryPageContainer{
     padding:20px;
 }
+.selectContainer{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+.select{
+    width: 100%;
+}
+.newRegulationContainer{
+    display: flex;
+    align-items: center;
+    gap:10px;
+    padding: 10px;
+}
