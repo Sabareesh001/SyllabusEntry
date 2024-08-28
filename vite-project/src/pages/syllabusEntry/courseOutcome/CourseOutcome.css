@@ -1,0 +1,30 @@
+.courseOutcomeContainer{
+
+}
+.courseOutcomeTableContainer{
+
+}
+.addCourseOutcomeButton{
+    display: flex;
+    align-items: center;
+}
+
+.addCourseOutcomeButtonContainer{
+    display: flex;
+    justify-content: flex-end;
+}
+.textAreaContainer{
+
+
+}
+
+.addCourseOutcomeActionContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.addCourseOutcomeActions{
+    display: flex;
+    gap: 10px;
+}

@@ -263,11 +263,14 @@ const SyllabusEntry = () => {
                                              
                                             </div>
                                         ))}
-                                        {
-                                            (currentOpenIndicator && index  == currentOpenIndicator.course) && 
-                                            courseModifyOptions[currentOpenIndicator.option].component
-                                        }
+                                    
                                     </div>
+                                    {
+                                            (currentOpenIndicator && index  == currentOpenIndicator.course) && 
+                                            <div>
+                                           { courseModifyOptions[currentOpenIndicator.option].component}
+                                            </div>
+                                        }
                                 </div>
                             }
                         />
