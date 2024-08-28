@@ -2,7 +2,7 @@ import "./SyllabusEntry.css";
 import Card from "../../components/card/Card";
 import Select, { components } from "react-select";
 import { Add, ArrowDropDown, Edit, Info } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -283,7 +283,7 @@ const SyllabusEntry = () => {
                                     {
                                             (currentOpenIndicator && index  == currentOpenIndicator.course) && 
                                             <div>
-                                           { courseModifyOptions[currentOpenIndicator.option].component}
+                                           { React.cloneElement(courseModifyOptions[currentOpenIndicator.option].component,{courseId:course.id})}
                                             </div>
                                         }
                                 </div>

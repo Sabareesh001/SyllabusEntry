@@ -6,6 +6,7 @@ const verifyToken = require("./middlewares/authMiddleware");
 app.use(cors());
 const AuthRoutes = require("./routes/auth");
 const courseRoutes = require('./routes/course')
+const courseObjectiveRoutes = require('./routes/courseObjective')
 // Middleware
 app.use(express.json());
 
@@ -15,7 +16,7 @@ app.use(
   "/api",
   verifyToken,
 ); // Protected routes
-app.use("/", verifyToken, apiRoutes,courseRoutes); // Protected routes for other API functionality
+app.use("/", verifyToken, apiRoutes,courseRoutes,courseObjectiveRoutes); // Protected routes for other API functionality
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
