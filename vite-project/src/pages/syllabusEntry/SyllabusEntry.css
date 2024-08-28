@@ -27,5 +27,43 @@
 .addCoursesButtonContainer{
     display: flex;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-between;
+}
+.courseDetailsContainer{
+    display: flex;
+   gap: 20px;
+   justify-content: space-between;
+}
+.courseContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+    padding: 10px;
+}
+
+.courseStateIndicatorContainer{
+    display: flex;
+    gap: 10px;
+}
+.courseDetails{
+    display: flex;
+    gap: 20px;
+}
+.iconButtonContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.poPsoEditContainer{
+    display: flex;
+    gap: 10px;
+}
+
+.info{
+    display: flex;
+    color: orangered;
+    gap: 10px;
+    align-items: center;
 }

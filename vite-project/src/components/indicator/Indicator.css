@@ -1,0 +1,21 @@
+.indicatorContainer{
+    background-color:#ccc3ff ;
+    padding: 8px;
+    color: black;
+    border-radius: 20px;
+    max-width: 200px;
+    text-align: center;
+}
+
+.indicatorContainer.active{
+    background-color:#442fbb;
+   color: white;
+}
+
+.indicatorContainer.inactive{
+    background-color:#727272;
+    color:white;
+}
+.indicatorContainer:hover{
+    cursor: pointer;
+}
