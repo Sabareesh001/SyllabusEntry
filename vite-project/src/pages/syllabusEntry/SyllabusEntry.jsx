@@ -192,7 +192,9 @@ const SyllabusEntry = () => {
             )
         );
     };
-
+   useEffect(()=>{
+    console.log(regulation)
+   },[regulation])
     return (
         <div className="syllabusEntryPageContainer">
             <ToastContainer/>
@@ -283,7 +285,7 @@ const SyllabusEntry = () => {
                                     {
                                             (currentOpenIndicator && index  == currentOpenIndicator.course) && 
                                             <div>
-                                           { React.cloneElement(courseModifyOptions[currentOpenIndicator.option].component,{courseId:course.id})}
+                                           { React.cloneElement(courseModifyOptions[currentOpenIndicator.option].component,{courseId:course.id,regulation:regulation?.value})}
                                             </div>
                                         }
                                 </div>
