@@ -87,9 +87,7 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-tr:hover {
-    background-color: #dcdcdc;
-}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

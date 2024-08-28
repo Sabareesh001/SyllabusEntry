@@ -1,0 +1,17 @@
+.courseModifyContainer{
+  display: flex;
+  flex-direction: column;
+}
+.cancelAndCheckContainer{
+    display: flex;
+}
+.cancelAndCheckContainer:hover{
+    cursor: pointer;
+}
+.courseModifyTableContainer{
+
+}
+.editOptionsContainer{
+    display: flex;
+    justify-content: flex-end;
+}

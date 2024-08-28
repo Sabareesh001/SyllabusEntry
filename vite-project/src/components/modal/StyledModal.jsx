@@ -5,8 +5,11 @@ import clsx from 'clsx';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import Button from '../button/Button';
- function StyledModal({open,setOpen,content,submitAction,title}) {
-  const handleClose = () => setOpen(false);
+ function StyledModal({open,setOpen,content,submitAction,title,onClose}) {
+  const handleClose = () =>{
+    setOpen(false);
+    {onClose}
+  } 
   return (
     <div className='modalContainer'> 
       <Modal

@@ -1,7 +1,7 @@
 import "./SyllabusEntry.css";
 import Card from "../../components/card/Card";
 import Select, { components } from "react-select";
-import { ArrowDropDown, Edit, Info } from "@mui/icons-material";
+import { Add, ArrowDropDown, Edit, Info } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,7 +18,9 @@ import ProgrammeSpecificOutcome from "./programmeSpecificOutcome/ProgrammeSpecif
 import CourseObjective from "./courseObjective/CourseObjective";
 import CourseOutcome from "./courseOutcome/CourseOutCome";
 import ProgrammeOutcome from "./programmeOutcome/ProgrammeOutcome";
-
+import Course from "./course/Course";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast,ToastContainer} from 'react-toastify'
 const SyllabusEntry = () => {
     const [isRegulationModalOpen, setRegulationModalOpen] = useState(false);
     const [fromYear, setFromYear] = useState(null);
@@ -27,8 +29,6 @@ const SyllabusEntry = () => {
     const [regulationOptions, setRegulationOptions] = useState([]);
     const [regulation, setRegulation] = useState(null);
 
-    const [yearOptions, setYearOptions] = useState([]);
-    const [year, setYear] = useState(null);
 
     const [semesterOptions, setSemesterOptions] = useState([]);
     const [semester, setSemester] = useState(null);
@@ -39,10 +39,12 @@ const SyllabusEntry = () => {
     const [poEditSureModalOpen,setPoEditSureModalOpen] = useState(false)
     const [poEditSure,setPoEditSure] = useState(false)
 
+    const [courseModalOpen,setCourseModalOpen] = useState(false)
+
     const [courses, setCourses] = useState([
-        { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 },
-        { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 },
-        { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 }
+        // { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 },
+        // { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 },
+        // { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 }
     ]);
 
     const [activeIndicatorsState, setActiveIndicatorsState] = useState([[]]);
@@ -78,6 +80,40 @@ const SyllabusEntry = () => {
         }
     }, [courses]);
 
+    useEffect(()=>{
+         fetchCourses()
+    },[courseModalOpen])
+
+    const fetchCourses = () => {
+        try {
+          if (department && semester && regulation) {
+            axios.get(`${apiHost}/courses`, {
+              params: {
+                department:department.value,
+                semester:semester.value,
+                regulation:regulation.value
+              },
+              headers: {
+                auth: cookies.auth
+              }
+            }).then((res) => {
+              if (res.data) {
+                setCourses(res.data);
+              }
+            });
+          }
+        } catch (error) {
+          toast.error(error);
+        }
+      };
+    
+      useEffect(() => {
+        if (regulation && semester && department) {
+          fetchCourses();
+        }
+      }, [regulation, semester, department]);
+    
+
     const fetchRegulations = async () => {
         try {
             const res = await axios.get(`${apiHost}/regulations`, {
@@ -93,20 +129,7 @@ const SyllabusEntry = () => {
         }
     };
 
-    const fetchYears = async () => {
-        try {
-            const res = await axios.get(`${apiHost}/years`, {
-                headers: { auth: cookies.auth }
-            });
-            const modifiedOptions = res.data.map((data) => ({
-                value: data.id,
-                label: data.year
-            }));
-            setYearOptions(modifiedOptions);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+
 
     const fetchSemesters = async () => {
         try {
@@ -142,7 +165,6 @@ const SyllabusEntry = () => {
         fetchDepartments();
         fetchRegulations();
         fetchSemesters();
-        fetchYears();
     }, [cookies.auth]);
 
     useEffect(() => {
@@ -173,6 +195,7 @@ const SyllabusEntry = () => {
 
     return (
         <div className="syllabusEntryPageContainer">
+            <ToastContainer/>
             <Card
                 content={
                     <div className="selectContainer">
@@ -186,14 +209,6 @@ const SyllabusEntry = () => {
                             <div onClick={() => setRegulationModalOpen(true)} className="newRegulationContainer">
                                 <Info /> New Regulation?
                             </div>
-                        </div>
-                        <div className="select">
-                            <Select
-                                options={yearOptions}
-                                placeholder={"Year"}
-                                value={year}
-                                onChange={setYear}
-                            />
                         </div>
                         <div className="select">
                             <Select
@@ -215,7 +230,7 @@ const SyllabusEntry = () => {
                 }
             />
 
-            {(department && regulation && year && semester) || courses.length > 0 ? (
+            {(department && regulation  && semester) || courses.length > 0 ? (
                 <div className="addCoursesButtonContainer">
                   <div className="poPsoEditContainer">
                     <div onClick={()=>{setPoEditSureModalOpen(true)}}>
@@ -225,7 +240,7 @@ const SyllabusEntry = () => {
                     </div>
                    
                    <div>
-                   <Button size={"small"} label={<div className="iconButtonContainer"><Edit/>Edit Courses</div>} />
+                   <Button onClick={()=>{setCourseModalOpen(true)}} size={"small"} label={<div className="iconButtonContainer"><Edit/>Edit Courses</div>} />
                     </div>
                 </div>
             ) : null}
@@ -238,8 +253,8 @@ const SyllabusEntry = () => {
                                 <div className="courseContainer">
                                     <div className="courseDetailsContainer">
                                         <div className="courseDetails">
-                                            <p>{course.courseCode}</p>
-                                            <p>{course.courseName}</p>
+                                            <p>{course.course_code}</p>
+                                            <p>{course.course_name}</p>
                                         </div>
                                         <div>
                                             <ArrowDropDown />
@@ -299,6 +314,20 @@ const SyllabusEntry = () => {
                         </div>
                     </div>
                 }
+            />
+            <StyledModal
+               title={"Edit Courses"}
+               open={courseModalOpen}
+               setOpen={setCourseModalOpen}
+               content={
+                <div className="courseModalContainer">
+                    <Course
+                    toast={toast}
+                     department={department?.value}
+                       semester={semester?.value} 
+                      regulation={regulation?.value}/>
+                </div>
+               }
             />
             <AreYouSure content={
 
