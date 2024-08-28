@@ -1,0 +1,84 @@
+.sidebarContainer {
+  width: 300px;
+  height: 100vh;
+  background: #bdc3c7;  /* fallback for old browsers */
+background: linear-gradient(to right, #13122b, #000000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  padding: 20px; /* Padding around content */
+  color: rgb(255, 255, 255); /* Text color */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.245); /* Subtle shadow */
+  overflow-y:scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
+
+ul {
+  list-style-type: none; /* Remove default styles */
+  padding: 0; /* Remove padding */
+}
+
+li {
+  list-style: none;
+  padding: 10px 0; /* Spacing between items */
+}
+a{
+  text-decoration: none;
+  color: white;
+ }
+.listItem {
+  display: flex; /* Use flexbox */
+  justify-content: space-between; /* Space between icon and text */
+  align-items: center; /* Center items vertically */
+  padding: 15px 20px; /* Padding for list items */
+  cursor: pointer; /* Pointer cursor on hover */
+  position: relative; /* Position for hover effect */
+  transition: background-color 0.3s ease; /* Subtle transition */
+  border-radius: 5px; /* Rounded corners */
+  gap: 10px;
+}
+
+.listItem:hover {
+  background-image: radial-gradient( circle 382px at 50% 50.2%,  rgba(73,76,212,1) 0.1%, rgba(3,1,50,1) 100.2% );
+}
+
+.listItem.active {
+  background-image: radial-gradient( circle 382px at 50% 50.2%,  rgba(73,76,212,1) 0.1%, rgba(3,1,50,1) 100.2% );
+  
+}
+
+
+.dropdownIcon {
+  margin-left: auto; /* Push dropdown icon to the right */
+  color: #f1f1f1; /* Color for dropdown icons */
+}
+
+/* Submenu container */
+.submenuContainer {
+  padding-left: 20px; /* Indentation for dropdown items */
+  margin-top: 10px; /* Spacing above the submenu */
+}
+
+.submenuItem {
+  display: flex; /* Use flexbox for submenu items */
+  align-items: center; /* Center vertically */
+  padding: 10px; /* Spacing for submenu items */
+  width: 100%; /* Full width for submenu items */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s ease; /* Smooth transition */
+  border-radius: 10px;
+  gap: 10px;
+}
+
+.submenuItem:hover {
+  background-color: #31305c; /* Change to a lighter hover color for submenu */
+}
+
+.sidebarTitle {
+  font-size: 1.5rem; /* Title size */
+  margin: 16px 0; /* Spacing above and below */
+  text-align: center; /* Center the title */
+  font-weight: bold; /* Bold title */
+  color: #f1f1f1; /* Title color */
+}
