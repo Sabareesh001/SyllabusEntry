@@ -14,6 +14,7 @@ exports.getAllProgrammeSpecificOutcomes = async (req, res) => {
 // Get a programme-specific outcome by ID
 exports.getProgrammeSpecificOutcomeById = async (req, res) => {
     const { id } = req.params;
+    console.log(req.params)
     try {
         const [rows] = await pool.query('SELECT * FROM master_programme_specific_outcome WHERE department = ?', [id]);
         if (rows.length === 0) {

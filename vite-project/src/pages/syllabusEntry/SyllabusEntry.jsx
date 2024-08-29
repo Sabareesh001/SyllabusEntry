@@ -293,7 +293,7 @@ const SyllabusEntry = () => {
                                     {
                                             (currentOpenIndicator && index  == currentOpenIndicator.course) && 
                                             <div>
-                                           { React.cloneElement(courseModifyOptions[currentOpenIndicator.option].component,{courseId:course.id,regulation:regulation?.value})}
+                                           { React.cloneElement(courseModifyOptions[currentOpenIndicator.option].component,{courseId:course.id,regulation:regulation?.value,department:department.value})}
                                             </div>
                                         }
                                 </div>

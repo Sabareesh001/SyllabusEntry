@@ -12,6 +12,7 @@ exports.getAllProgrammeOutcomes = async (req, res) => {
 };
 
 exports.getProgrammeOutcomeById = async (req, res) => {
+    
     const { id } = req.params;
     try {
         const [rows] = await pool.query('SELECT * FROM master_programme_outcome WHERE regulation = ?', [id]);

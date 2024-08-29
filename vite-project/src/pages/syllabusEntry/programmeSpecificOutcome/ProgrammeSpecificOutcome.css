@@ -1,0 +1,20 @@
+.programmeOutcomeTableContainer {
+    position: relative;
+  }
+  
+  .deleteIcon {
+    visibility: hidden;
+  
+  }
+  
+  .tableCell:hover .deleteIcon {
+    visibility: visible;
+    cursor: pointer;
+    color: red;
+  }
+  .textFieldAndDelete{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
