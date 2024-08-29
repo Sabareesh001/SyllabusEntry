@@ -26,6 +26,21 @@ exports.getProgrammeOutcomeById = async (req, res) => {
     }
 };
 
+exports.getProgrammeOutcomeByID = async (req, res) => {
+    
+    const { id } = req.params;
+    try {
+        const [rows] = await pool.query('SELECT * FROM master_programme_outcome WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Programme outcome not found' });
+        }
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching programme outcome:', error);
+        res.status(500).json({ message: 'Error fetching programme outcome' });
+    }
+};
+
 exports.createProgrammeOutcome = async (req, res) => {
     const { regulation, programme_outcome, status } = req.body;
     try {

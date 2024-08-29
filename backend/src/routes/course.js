@@ -6,6 +6,7 @@ router.post('/courses',courseController.postCourse );
   
   // Read a course by ID
   router.get('/courses',courseController.getCourses );
+  router.get('/coursesById',courseController.getCoursesById );
   
   // Update a course by ID
   router.put('/courses/:id',courseController.updateCourse );

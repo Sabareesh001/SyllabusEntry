@@ -8,6 +8,7 @@ router.get('/programme-outcomes', programmeOutcomeController.getAllProgrammeOutc
 // GET a specific programme outcome by ID
 router.get('/programme-outcomes/:id', programmeOutcomeController.getProgrammeOutcomeById);
 
+router.get('/programme-outcomes-by-id/:id', programmeOutcomeController.getProgrammeOutcomeByID);
 // CREATE a new programme outcome
 router.post('/programme-outcomes', programmeOutcomeController.createProgrammeOutcome);
 

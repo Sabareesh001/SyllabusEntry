@@ -23,7 +23,7 @@ app.use("/auth", AuthRoutes); // Unprotected routes for authentication
 app.use("/api", verifyToken); // Protected routes
 app.use(
   "/",
-  verifyToken,
+  // verifyToken,
   apiRoutes,
   courseRoutes,
   courseObjectiveRoutes,

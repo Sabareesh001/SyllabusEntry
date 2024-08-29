@@ -28,11 +28,25 @@ exports.getAllCourseOutcomes = async (req, res) => {
 };
 
 // Read (Single)
-exports.getCourseOutcomeById = async (req, res) => {
+exports.getCourseOutcomeByCourse = async (req, res) => {
   const { id } = req.params;
 
   try {
     const [rows] = await pool.query('SELECT * FROM master_course_outcome WHERE course = ?', [id]);
+    if (rows.length > 0) {
+      res.json(rows);
+    } else {
+      res.status(404).json({ error: 'Course outcome not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.getCourseOutcomeById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [rows] = await pool.query('SELECT * FROM master_course_outcome WHERE id = ?', [id]);
     if (rows.length > 0) {
       res.json(rows);
     } else {

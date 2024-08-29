@@ -1,9 +1,10 @@
 const PdfPrinter = require('pdfmake/src/printer');
 const path = require('path');
-
-exports.getPDF = (req, res) => {
+const axios = require('axios')
+const apiHost = `http://localhost:3000`
+exports.getPDF = async(req, res) => {
     // Example JSON data (this could come from a request or database)
-    const courseData = {
+    let courseData = {
         "course": {
             "code": "22EE504",
             "title": "CONTROL SYSTEMS",
@@ -122,6 +123,10 @@ exports.getPDF = (req, res) => {
             }
         ]
     };
+    
+    await axios.get(`${apiHost}/reportData/3/1`).then((res)=>{
+         courseData=res.data;
+    })
 
     var fonts = {
         Roboto: {
@@ -322,3 +327,100 @@ exports.getPDF = (req, res) => {
     pdfDoc.pipe(res);
     pdfDoc.end();
 };
+
+exports.getData = async (req,res) =>{
+    const {courseId,regulationId} = req.params;
+    
+    try {
+      // Fetch Course Details
+      const courseDetails = await axios.get(`${apiHost}/coursesById?id=${courseId}`);
+      const course = courseDetails.data[0];
+  
+      // Fetch Course Objectives
+      const courseObjectives = await axios.get(`${apiHost}/course-objectives/${courseId}`);
+      const objectives = courseObjectives.data;
+  
+      // Fetch Programme Outcomes (assuming regulation ID is needed)
+      const regulationId = course.regulation;
+      const programmeOutcomes = await axios.get(`${apiHost}/programme-outcomes/${regulationId}`);
+      const outcomes = programmeOutcomes.data;
+  
+      // Fetch Course Outcomes
+      const courseOutcomes = await axios.get(`${apiHost}/course-outcomes-by-id/${courseId}`);
+      const outcomesData = courseOutcomes.data;
+  
+      // Fetch Course-PO Mappings for each CO
+      const poMappingsPromises = outcomesData.map(co => axios.get(`${apiHost}/course-po-mappings/${co.id}`));
+      const poMappings = await Promise.all(poMappingsPromises);
+  
+      // Fetch Course-PSO Mappings for each CO
+      const psoMappingsPromises = outcomesData.map(co => axios.get(`${apiHost}/course-pso-mappings/${co.id}`));
+      const psoMappings = await Promise.all(psoMappingsPromises);
+  
+      // Assemble Syllabus from Course Outcomes
+      const syllabusUnits = outcomesData.map(outcome => ({
+        unit: outcome.unit,
+        title: outcome.course_outcome,
+        hours: outcome.hours,
+        description: outcome.syllabus,
+      }));
+  
+      // Fetch References
+      const references = course.references.split(';'); // Assuming ';' is the delimiter
+  
+      // Combine all data
+      const courseData = {
+        course: {
+          code: course.course_code,
+          title: course.course_name,
+          credits: {
+            lecture: course.lecture,
+            tutorial: course.tutorial,
+            practical: course.practical,
+            total: course.credit
+          }
+        },
+        sections: [
+          {
+            type: "objectives",
+            title: "Course Objectives",
+            items: objectives.map(obj => obj.objective)
+          },
+          {
+            type: "outcomes",
+            title: "Programme Outcomes (POs)",
+            items: outcomes.map(outcome => ({ [`PO${outcome.id}`]: outcome.programme_outcome }))
+          },
+          {
+            type: "outcomes",
+            title: "Course Outcomes (COs)",
+            items: outcomesData.map(co => ({ [`CO${co.id}`]: co.course_outcome }))
+          },
+          {
+            type: "matrix",
+            title: "Articulation Matrix",
+            matrix: outcomesData.map((co, index) => ({
+              "CO.No.": `${co.id}`,
+              ...poMappings[index].data.reduce((acc, po) => ({ ...acc, [`PO${po.po}`]: po.level }), {}),
+              ...psoMappings[index].data.reduce((acc, pso) => ({ ...acc, [`PSO${pso.pso}`]: pso.level }), {})
+            }))
+          },
+          {
+            type: "syllabus",
+            title: "Syllabus",
+            units: syllabusUnits
+          },
+          {
+            type: "references",
+            title: "References",
+            items: references
+          }
+        ]
+      };
+  
+      res.json(courseData)
+    } catch (error) {
+      console.error('Error fetching course data:',error);
+    }
+  }
+  

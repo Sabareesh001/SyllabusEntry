@@ -71,3 +71,18 @@ exports.deleteCourse = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   }
+  exports.getCoursesById = async (req, res) => {
+    const { id} = req.query;
+    
+    try {
+      const [rows] = await pool.query('SELECT * FROM master_courses WHERE id = ?', [id]);
+  
+      if (rows.length > 0) {
+        res.json(rows);
+      } else {
+        res.status(404).json({ error: 'Course not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
