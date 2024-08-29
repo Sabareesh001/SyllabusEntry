@@ -13,10 +13,10 @@ exports.getAllProgrammeSpecificOutcomes = async (req, res) => {
 
 // Get a programme-specific outcome by ID
 exports.getProgrammeSpecificOutcomeById = async (req, res) => {
-    const { id } = req.params;
+    const { id ,regulation} = req.params;
     console.log(req.params)
     try {
-        const [rows] = await pool.query('SELECT * FROM master_programme_specific_outcome WHERE department = ?', [id]);
+        const [rows] = await pool.query('SELECT * FROM master_programme_specific_outcome WHERE department = ? AND regulation = ?', [id,regulation]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Programme-specific outcome not found' });
         }
@@ -29,10 +29,10 @@ exports.getProgrammeSpecificOutcomeById = async (req, res) => {
 
 // Create a new programme-specific outcome
 exports.createProgrammeSpecificOutcome = async (req, res) => {
-    const { department, programme_specific_outcome, status } = req.body;
+    const { department, programme_specific_outcome,regulation } = req.body;
     try {
-        const [result] = await pool.query('INSERT INTO master_programme_specific_outcome (department, programme_specific_outcome, status) VALUES (?, ?, ?)', [department, programme_specific_outcome, status]);
-        res.status(201).json({ id: result.insertId, department, programme_specific_outcome, status });
+        const [result] = await pool.query('INSERT INTO master_programme_specific_outcome (department, programme_specific_outcome,regulation) VALUES (?, ?,?)', [department, programme_specific_outcome,regulation]);
+        res.status(201).json({ id: result.insertId, department, programme_specific_outcome });
     } catch (error) {
         console.error('Error creating programme-specific outcome:', error);
         res.status(500).json({ message: 'Error creating programme-specific outcome' });
@@ -42,9 +42,9 @@ exports.createProgrammeSpecificOutcome = async (req, res) => {
 // Update an existing programme-specific outcome
 exports.updateProgrammeSpecificOutcome = async (req, res) => {
     const { id } = req.params;
-    const { department, programme_specific_outcome, status } = req.body;
+    const { department, programme_specific_outcome,regulation } = req.body;
     try {
-        const [result] = await pool.query('UPDATE master_programme_specific_outcome SET department = ?, programme_specific_outcome = ?, status = ? WHERE id = ?', [department, programme_specific_outcome, status, id]);
+        const [result] = await pool.query('UPDATE master_programme_specific_outcome SET department = ?, programme_specific_outcome = ? ,regulation=? WHERE id = ?', [department, programme_specific_outcome, regulation ,id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Programme-specific outcome not found' });
         }

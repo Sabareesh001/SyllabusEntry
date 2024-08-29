@@ -1,0 +1,92 @@
+.editPoContainer {
+    padding: 20px;
+}
+
+.PoListContainer {
+    margin-bottom: 20px;
+}
+
+.po {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.po p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.poActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.createPoContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.createPoContainer .MuiTextField-root {
+    flex-grow: 1;
+}
+
+.MuiButton-root {
+    margin-left: 10px;
+}
+.PoListContainer{
+    max-height: 300px;
+    overflow: scroll;
+}
+
+.editPoContainer {
+    padding: 20px;
+}
+
+.PoListContainer {
+    margin-bottom: 20px;
+}
+
+.po {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+.po p {
+    flex-grow: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.poActions {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.createPoContainer {
+    display: flex;
+    align-items: center;
+    
+    gap: 10px;
+}
+
+.textAreaContainer{
+    width: 100%;
+}
+

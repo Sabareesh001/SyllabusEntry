@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import apiHost from '../../../../config/config';
 import { useCookies } from 'react-cookie';
+import Button from '../../../components/button/Button';
 
 const ProgrammeOutcome = ({ courseId, regulation }) => {
     const [programmeOutcomes, setProgrammeOutcomes] = useState([]);
@@ -155,14 +156,19 @@ const ProgrammeOutcome = ({ courseId, regulation }) => {
                             ))}
                         </tbody>
                     </table>
+
+                    <div style={{display:"flex",justifyContent:"center"}}>
                     <IconButton
                         variant="contained"
                         color="primary"
                         onClick={saveMappings}
                         style={{ marginTop: '20px' }}
                     >
-                        <SaveIcon />
+                        <Button size={"small"} label={ <div className='iconButtonContainer'><SaveIcon /> Save</div>}/>
+                       
                     </IconButton>
+                        </div>
+                   
                 </div>
             )}
         </div>

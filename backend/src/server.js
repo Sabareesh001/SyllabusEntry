@@ -12,6 +12,7 @@ const programmeOutcomeRoutes = require("./routes/programmeOutcomes");
 const programmeSpecificRoutes = require("./routes/programmeSpecificOutcome");
 const coursePoMappingRoutes = require("./routes/coursePoMapping");
 const coursePsoMappingRoutes = require("./routes/coursePsoMapping")
+const regulationRoutes = require("./routes/regulation")
 // Middleware
 app.use(express.json());
 
@@ -28,7 +29,8 @@ app.use(
   programmeOutcomeRoutes,
   programmeSpecificRoutes,
   coursePoMappingRoutes,
-  coursePsoMappingRoutes
+  coursePsoMappingRoutes,
+  regulationRoutes
 ); // Protected routes for other API functionality
 
 const PORT = process.env.PORT || 3000;

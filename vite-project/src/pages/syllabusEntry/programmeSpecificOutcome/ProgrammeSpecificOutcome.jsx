@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import "./ProgrammeSpecificOutcome.css";
-import { TextField, Button } from "@mui/material";
+import { TextField,  IconButton } from "@mui/material";
 import { useCookies } from "react-cookie";
+import Button from "../../../components/button/Button";
 import axios from "axios";
 import apiHost from "../../../../config/config";
 import { Delete } from "@mui/icons-material";
-
+import SaveIcon from '@mui/icons-material/Save';
 const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
   const [cookies] = useCookies(["auth"]);
   const [programmeSpecificOutcomes, setProgrammeSpecificOutcomes] = useState([]);
@@ -210,14 +211,18 @@ const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
             ))}
           </tbody>
         </table>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={saveProgrammeSpecificOutcomesMapping}
-          style={{ marginTop: "10px" }}
-        >
-          Save
-        </Button>
+
+        <div style={{display:"flex",justifyContent:"center"}}>
+                    <IconButton
+                        variant="contained"
+                        color="primary"
+                        onClick={saveProgrammeSpecificOutcomesMapping}
+                        style={{ marginTop: '20px' }}
+                    >
+                        <Button size={"small"} label={ <div className='iconButtonContainer'><SaveIcon /> Save</div>}/>
+                       
+                    </IconButton>
+                        </div>
       </div>
     </div>
   );

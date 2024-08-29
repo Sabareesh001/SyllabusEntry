@@ -8,7 +8,6 @@ import Button from '../button/Button';
  function StyledModal({open,setOpen,content,submitAction,title,onClose}) {
   const handleClose = () =>{
     setOpen(false);
-    {onClose}
   } 
   return (
     <div className='modalContainer'> 
@@ -74,7 +73,7 @@ const grey = {
 
 const Modal = styled(BaseModal)(`
   position: fixed;
-  z-index: 1300;
+  z-index: 1200;
   right: 0;
   bottom: 0;
   top: 0;

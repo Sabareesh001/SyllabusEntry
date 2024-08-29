@@ -6,7 +6,9 @@ import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import Button from '../button/Button';
  function AreYouSure({open,setOpen,content,submitAction,title,setSure}) {
-  const handleClose = () => setOpen(false);
+  const handleClose = () =>{
+    setOpen(false);
+  } 
   return (
     <div className='modalContainer'> 
       <Modal
@@ -23,7 +25,9 @@ import Button from '../button/Button';
           </div>
        <div className='buttonsContainer'>
        <Button size={"small"} label={"Cancel"} onClick={handleClose}/>
-       <Button size={"small"} label={"Sure"} onClick={setSure} />
+       <Button size={"small"} label={"Sure"} onClick={()=>{
+        setSure(true); 
+        setOpen(false)}} />
        </div>
         </ModalContent>
       </Modal>
@@ -71,7 +75,7 @@ const grey = {
 
 const Modal = styled(BaseModal)(`
   position: fixed;
-  z-index: 9999;
+  z-index: 1600;
   right: 0;
   bottom: 0;
   top: 0;

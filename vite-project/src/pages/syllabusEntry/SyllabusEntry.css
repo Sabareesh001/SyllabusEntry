@@ -26,6 +26,7 @@
 }
 .addCoursesButtonContainer{
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     justify-content: space-between;
 }
@@ -44,6 +45,7 @@
 
 .courseStateIndicatorContainer{
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 .courseDetails{

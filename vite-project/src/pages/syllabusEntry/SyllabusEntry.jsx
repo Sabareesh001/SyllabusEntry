@@ -21,6 +21,9 @@ import ProgrammeOutcome from "./programmeOutcome/ProgrammeOutcome";
 import Course from "./course/Course";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast,ToastContainer} from 'react-toastify'
+import EditPo from "./editPO/EditPo";
+import EditPso from "./editPso/EditPso";
+import RegulationModal from "./regulation/Regulation";
 const SyllabusEntry = () => {
     const [isRegulationModalOpen, setRegulationModalOpen] = useState(false);
     const [fromYear, setFromYear] = useState(null);
@@ -40,6 +43,9 @@ const SyllabusEntry = () => {
     const [poEditSure,setPoEditSure] = useState(false)
 
     const [courseModalOpen,setCourseModalOpen] = useState(false)
+
+    const[editPoModalOpen,setEditPoModalOpen] = useState(false)
+    const[editPsoModalOpen,setEditPsoModalOpen] = useState(false)
 
     const [courses, setCourses] = useState([
         // { courseName: "Mathematics - I", courseCode: "22MA101", courseId: 1 },
@@ -84,6 +90,29 @@ const SyllabusEntry = () => {
          fetchCourses()
     },[courseModalOpen])
 
+    useEffect(()=>{
+        if(poEditSure){
+            setEditPoModalOpen(true)
+        }
+        
+      
+    },[poEditSure])
+
+    useEffect(()=>{
+        if(!isRegulationModalOpen){
+             fetchRegulations()
+        }
+
+    },[isRegulationModalOpen])
+
+useEffect(()=>{
+    if(editPoModalOpen){
+        setPoEditSure(false)
+    }
+    console.log(editPoModalOpen)
+
+},[editPoModalOpen])
+
     const fetchCourses = () => {
         try {
           if (department && semester && regulation) {
@@ -108,6 +137,9 @@ const SyllabusEntry = () => {
       };
     
       useEffect(() => {
+        if(courses){
+            setCourses([])
+        }
         if (regulation && semester && department) {
           fetchCourses();
         }
@@ -238,7 +270,10 @@ const SyllabusEntry = () => {
                     <div onClick={()=>{setPoEditSureModalOpen(true)}}>
                   <Button size={"small"} label={<div className="iconButtonContainer"><Edit/> POs</div>}/>
                       </div>
+                      <div onClick={()=>{setEditPsoModalOpen(true)}}>
                   <Button size={"small"} label={<div className="iconButtonContainer"><Edit/> PSOs</div>}/>
+
+                        </div>
                     </div>
                    
                    <div className="downloadAndEditCoursesContainer">
@@ -304,26 +339,9 @@ const SyllabusEntry = () => {
             ) : (
                 <NoData />
             )}
-
-            <StyledModal
-                title={"Create New Regulation"}
-                setOpen={setRegulationModalOpen}
-                open={isRegulationModalOpen}
-                content={
-                    <div className="datePickerContainer">
-                        <div>
-                            <p>Select Regulation Year</p>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    value={fromYear}
-                                    onChange={setFromYear}
-                                    views={["year"]}
-                                    openTo="year"
-                                />
-                            </LocalizationProvider>
-                        </div>
-                    </div>
-                }
+            <RegulationModal
+            isRegulationModalOpen={isRegulationModalOpen}
+            setRegulationModalOpen={setRegulationModalOpen}
             />
             <StyledModal
                title={"Edit Courses"}
@@ -331,11 +349,14 @@ const SyllabusEntry = () => {
                setOpen={setCourseModalOpen}
                content={
                 <div className="courseModalContainer">
-                    <Course
-                    toast={toast}
-                     department={department?.value}
-                       semester={semester?.value} 
-                      regulation={regulation?.value}/>
+                   <Course
+  key={`${department?.value}-${semester?.value}-${regulation?.value}`}
+  toast={toast}
+  department={department?.value}
+  semester={semester?.value}
+  regulation={regulation?.value}
+/>
+
                 </div>
                }
             />
@@ -345,7 +366,39 @@ const SyllabusEntry = () => {
                 On editing POs of this Regulation
                 <p className="info" ><Info/> editing this would affect the whole regulation</p>
                 </div>
-            } open={poEditSureModalOpen} setOpen={setPoEditSureModalOpen}/>
+            } open={poEditSureModalOpen} setOpen={setPoEditSureModalOpen}
+            setSure={setPoEditSure}
+            
+            />
+
+
+
+            <StyledModal
+            title={"Edit Programme Outcomes"}
+            key={`${regulation?.value}`}
+            open={editPoModalOpen}
+            setOpen={setEditPoModalOpen}
+            content={
+            <div>
+                <EditPo
+                regulation={regulation?.value}
+                />
+                </div>}
+            />
+            <StyledModal
+             title={"Edit Programme Specific Outcomes"}
+             key={`${department?.value}`}
+             open={editPsoModalOpen}
+             setOpen={setEditPsoModalOpen}
+             content={
+                <div>
+                    <EditPso
+                    regulation={regulation?.value}
+                    department={department?.value}
+                    />
+                    </div>
+             }
+            />
         </div>
     );
 };
