@@ -2,6 +2,127 @@ const PdfPrinter = require('pdfmake/src/printer');
 const path = require('path');
 
 exports.getPDF = (req, res) => {
+    // Example JSON data (this could come from a request or database)
+    const courseData = {
+        "course": {
+            "code": "22EE504",
+            "title": "CONTROL SYSTEMS",
+            "credits": {
+                "lecture": 3,
+                "tutorial": 1,
+                "practical": 0,
+                "total": 4
+            }
+        },
+        "sections": [
+            {
+                "type": "objectives",
+                "title": "Course Objectives",
+                "items": [
+                    "To understand the basic concepts of open loop and closed loop control systems.",
+                    "To analyse the given system in time domain.",
+                    "To understand the concept of frequency domain analysis.",
+                    "To understand the concept of stability of system.",
+                    "To design the compensator for different control systems."
+                ]
+            },
+            {
+                "type": "outcomes",
+                "title": "Programme Outcomes (POs)",
+                "items": [
+                    {"PO1": "Engineering knowledge: Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems."},
+                    {"PO2": "Problem analysis: Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences."},
+                    {"PO3": "Design/development of solutions: Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for public health and safety, and cultural, societal, and environmental considerations."},
+                    {"PO4": "Conduct investigations of complex problems: Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of the information to provide valid conclusions."},
+                    {"PSO1": "Design, analyze and evaluate the performance of Electrical & Electronics systems using contemporary tools to provide effective solutions for real-world problems."},
+                    {"PSO2": "Apply technology to make a significant contribution in terms of Electrical Engineering Innovations and ethically supporting the sustainable development of the society."}
+                ]
+            },
+            {
+                "type": "outcomes",
+                "title": "Course Outcomes (COs)",
+                "items": [
+                    {"CO1": "Develop a mathematical model of a physical system and compute the transfer function using Block diagram reduction technique and Signal flow graph."},
+                    {"CO2": "Analyze the performance of first and second order system and compute the steady state error for different test signals."},
+                    {"CO3": "Analyze the frequency response of a given system."},
+                    {"CO4": "Examine the stability of a given system using various methods."},
+                    {"CO5": "Design a lag, lead, and lag-lead compensator for open loop system and examine a system using state variable techniques."}
+                ]
+            },
+            {
+                "type": "matrix",
+                "title": "Articulation Matrix",
+                "matrix": [
+                    {"CO.No.": "1", "PO1": 3, "PO2": "", "PO3": 2, "PO4": 3, "PO5": 3, "PSO1": 3, "PSO2": ""},
+                    {"CO.No.": "2", "PO1": 1, "PO2": "", "PO3": 2, "PO4": 3, "PO5": 3, "PSO1": 3, "PSO2": ""},
+                    {"CO.No.": "3", "PO1": 2, "PO2": "", "PO3": 3, "PO4": 3, "PO5": 3, "PSO1": 3, "PSO2": ""},
+                    {"CO.No.": "4", "PO1": 3, "PO2": "", "PO3": 2, "PO4": 3, "PO5": 3, "PSO1": 3, "PSO2": ""},
+                    {"CO.No.": "5", "PO1": 2, "PO2": "", "PO3": 2, "PO4": 3, "PO5": 3, "PSO1": 3, "PSO2": ""}
+                ]
+            },
+            {
+                "type": "syllabus",
+                "title": "Syllabus",
+                "units": [
+                    {
+                        "unit": "UNIT I",
+                        "title": "MATHEMATICAL MODEL OF PHYSICAL SYSTEMS",
+                        "hours": "10 Hours",
+                        "description": "Introduction- Basic Elements of control Systems-Open loop and closed loop system - Elements of Control system - Transfer function of mechanical translational and rotational system electrical system - Electrical analogy of mechanical system - Block diagram reduction technique - Signal flow graph."
+                    },
+                    {
+                        "unit": "UNIT II",
+                        "title": "TIME DOMAIN ANALYSIS",
+                        "hours": "8 Hours",
+                        "description": "Standard test signals - Time response of first order and second order systems for unit step test signals - Time domain Specifications-Steady state response - Static error constants - steady state error - Effects of proportional derivative proportional integral systems."
+                    },
+                    {
+                        "unit": "UNIT III",
+                        "title": "FREQUENCY DOMAIN ANALYSIS",
+                        "hours": "9 Hours",
+                        "description": "Frequency response of systems - Frequency domain specifications - Correlation between frequency domain and time domain specifications - Bode plot Polar plot."
+                    },
+                    {
+                        "unit": "UNIT IV",
+                        "title": "STABILITY ANALYSIS OF CONTROL SYSTEM",
+                        "hours": "9 Hours",
+                        "description": "Concepts of stability - Necessary conditions for Stability-Characteristics equation - Location of roots in S plane for stability - Routh Hurwitz criterion-Nyquist stability criterion- Root Locus technique- Relative Stability."
+                    },
+                    {
+                        "unit": "UNIT V",
+                        "title": "COMPENSATOR DESIGN",
+                        "hours": "9 Hours",
+                        "description": "Compensators Design of Lag compensator - Lead compensator - Lag-lead compensator (using Bode plot) - Concept of state state variable state model Controllability and observability."
+                    },
+                    {
+                        "unit": "",
+                        "title": "Tutorial",
+                        "hours": "15 Hours",
+                        "description": ""
+                    },
+                    {
+                        "unit": "",
+                        "title": "Total",
+                        "hours": "60 Hours",
+                        "description": ""
+                    }
+                ]
+            },
+            {
+                "type": "references",
+                "title": "References",
+                "items": [
+                    "I.J.Nagrath and M.Gopal, Control System Engineering, NewAge International Publisher, 2018",
+                    "M.Gopal, Control System Principles and Design, TataMcGraw-Hill, 2012.",
+                    "K.Ogatta, Modern Control Engineering, Pearson Education, NewDelhi, 2015",
+                    "BenjaminC. Kuo, Automatic Control Systems, Prentice-Hall of India Pvt. Ltd., 2014",
+                    "M.N.Bandyopadhyay, Control Engineering Theory and Practice, 9thEdition, John Wiley & Sons, 2006.",
+                    "https://archive.nptel.ac.in/courses/107/106/107106081/"
+                ]
+            }
+        ]
+    };
+
     var fonts = {
         Roboto: {
             normal: path.join(__dirname, '../assets/times.ttf'),
@@ -13,360 +134,77 @@ exports.getPDF = (req, res) => {
 
     var printer = new PdfPrinter(fonts);
 
-    var docDefinition = {
-        content: [
-            {
-                table: {
-                    widths: ['10%', '50%', '10%', '10%', '10%', '10%'],
-                    body: [
-                        [
-                            { text: '22EE504', fontSize: 11, bold: true },
-                            { text: 'CONTROL SYSTEMS', fontSize: 11, bold: true },
-                            { text: '3', fontSize: 11 },
-                            { text: '1', fontSize: 11 },
-                            { text: '0', fontSize: 11 },
-                            { text: '4', fontSize: 11 }
-                        ]
-                    ]
-                },
-                layout: {
-                    hLineWidth: function (i, node) {
-                        return (i === 0) ? 1 : 0; // Horizontal line thickness (only for the top line)
-                    },
-                    vLineWidth: function (i, node) {
-                        return 1; // Vertical line thickness
-                    },
-                    hLineColor: function (i, node) {
-                        return (i === 0) ? '#000000' : '#FFFFFF'; // Horizontal line color (only for the top line)
-                    },
-                    vLineColor: function (i, node) {
-                        return '#000000'; // Vertical line color
-                    },
-                    paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                    paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                    paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-                    paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                    // Solid border around the entire table
-                    hLineStyle: function (i, node) {
-                        return (i === 0) ? null : 'dashed'; // Solid line for the top, dashed for others
-                    },
-                    vLineStyle: function (i, node) {
-                        return null; // Solid line
-                    },
-                }
-                ,
-                margin: [0, 0, 0, 0] // Bottom margin for spacing
+    // Dynamic content generation based on JSON data
+    const content = [];
+
+    // Course Information Section
+    content.push({
+        table: {
+            widths: ['10%', '50%', '10%', '10%', '10%', '10%'],
+            body: [
+                [
+                    { text: courseData.course.code, fontSize: 11, bold: true },
+                    { text: courseData.course.title, fontSize: 11, bold: true },
+                    { text: courseData.course.credits.lecture.toString(), fontSize: 11 },
+                    { text: courseData.course.credits.tutorial.toString(), fontSize: 11 },
+                    { text: courseData.course.credits.practical.toString(), fontSize: 11 },
+                    { text: courseData.course.credits.total.toString(), fontSize: 11 }
+                ]
+            ]
+        },
+        layout: {
+            hLineWidth: function (i, node) {
+                return 1; // Horizontal line thickness
             },
-            {
-                
+            vLineWidth: function (i, node) {
+                return 1; // Vertical line thickness
+            },
+            hLineColor: function (i, node) {
+                return '#000000'; // Horizontal line color
+            },
+            vLineColor: function (i, node) {
+                return '#000000'; // Vertical line color
+            },
+            paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
+            paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
+            paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
+            paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
+            // Solid border around the entire table
+            hLineStyle: function (i, node) {
+                return null; // Solid line
+            },
+            vLineStyle: function (i, node) {
+                return null; // Solid line
+            },
+        },
+        margin: [0, 0, 0, 0]
+    });
+    
+    // Sections like Objectives, Outcomes, etc.
+    courseData.sections.forEach(section => {
+        // Add section title
+        content.push({
+            text: section.title,
+            fontSize: 11,
+            bold: true,
+          
+            margin: [0, 10, 0, 5]
+        });
+    
+        // Handle different section types
+        if (section.type === 'objectives' || section.type === 'references') {
+            content.push({
+                ul: section.items.map(item => ({
+                    text: item,
+                    fontSize: 11
+                })),
+                margin: [0, 0, 0, 10]
+            });
+        } else if (section.type === 'outcomes') {
+            content.push({
                 table: {
-                    widths: ['*'], // Single column that spans the entire page width
-                    borderColor:["#0000"],
-                    body: [
-                        
-                        // Course Objectives Section
-                        [
-                            {
-                                text: 'Course Objectives', fontSize: 11, bold: true, margin: [0, 10, 0, 5]
-                            }
-                        ],
-                        [
-                            {
-                                ul: [
-                                    { text: 'To understand the basic concepts of open loop and closed loop control systems.', fontSize: 11 },
-                                    { text: 'To analyse the given system in time domain.', fontSize: 11 },
-                                    { text: 'To understand the concept of frequency domain analysis.', fontSize: 11 },
-                                    { text: 'To understand the concept of stability of system.', fontSize: 11 },
-                                    { text: 'To design the compensator for different control systems.', fontSize: 11 }
-                                ],
-                                margin: [0, 0, 0, 10]
-                            }
-                        ],
-                        // Programme Outcomes (POs)
-                        [
-                            {
-                                text: 'Programme Outcomes (POs)', fontSize: 11, bold: true, margin: [0, 10, 0, 5]
-                            }
-                        ],
-                        [
-                            { 
-                                
-                                    table: {
-                                      widths: ['auto', '*'], // Adjust column widths if needed
-                                      body: [
-                                       
-                                        ['PO1', 'Engineering knowledge: Apply the knowledge of mathematics science engineering fundamentals and an engineering specialization to the solution of complex engineering problems.'],
-                                        ['PO2', 'Problem analysis: Identify formulate review research literature and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics natural sciences and engineering sciences.'],
-                                        ['PO3', 'Design/development of solutions: Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for the public health and safety and the cultural societal and environmental considerations.'],
-                                        ['PO4', 'Conduct investigations of complex problems: Use research-based knowledge and research methods including design of experiments analysis and interpretation of data and synthesis of the information to provide valid conclusions.'],
-                                        ['PSO1', 'Design analyze and evaluate the performance of Electrical & Electronics systems using contemporary tools to provide effective solutions for real-world problems.'],
-                                        ['PSO2', 'Apply technology to make a significant contribution in terms of Electrical Engineering Innovations and ethically supporting the sustainable development of the society.']
-                                      ]
-                                    },
-                                    layout: {
-                                        hLineWidth: function (i, node) {
-                                            return 1; // Horizontal line thickness
-                                        },
-                                        vLineWidth: function (i, node) {
-                                            return 1; // Vertical line thickness
-                                        },
-                                        hLineColor: function (i, node) {
-                                            return '#000000'; // Horizontal line color
-                                        },
-                                        vLineColor: function (i, node) {
-                                            return '#000000'; // Vertical line color
-                                        },
-                                        paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                                        paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                                        paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-                                        paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                                        // Solid border around the entire table
-                                        hLineStyle: function (i, node) {
-                                            return null; // Solid line
-                                        },
-                                        vLineStyle: function (i, node) {
-                                            return null; // Solid line
-                                        },
-                                    },
-                                  
-                                margin: [0, 0, 0, 10]
-                            }
-                        ],
-                        // Course Outcomes (COs)
-                        [
-                            {
-                                text: 'Course Outcomes (COs)', fontSize: 11, bold: true, margin: [0, 10, 0, 5]
-                            }
-                        ],
-                        [
-                            {
-                                table: {
-                                    widths: ['auto', '*'], // Adjust column widths if needed
-                                    body: [
-                                     
-                                      ['CO1', 'Develop a mathematical model of a physical system and compute the transfer function using Block diagram reduction technique and Signal flow graph.'],
-                                      ['CO2', 'Analyze the performance of first and second order system and compute the steady state error for different test signals.'],
-                                      ['CO3', 'Analyze the frequency response of a given system.'],
-                                      ['CO4', 'Examine the stability of a given system using various methods.'],
-                                      ['CO5', 'Design a lag lead and lag lead compensator for open loop system and examine a system using state variable techniques.']
-                                    ]
-                                  },
-                                 layout: {
-                                        hLineWidth: function (i, node) {
-                                            return 1; // Horizontal line thickness
-                                        },
-                                        vLineWidth: function (i, node) {
-                                            return 1; // Vertical line thickness
-                                        },
-                                        hLineColor: function (i, node) {
-                                            return '#000000'; // Horizontal line color
-                                        },
-                                        vLineColor: function (i, node) {
-                                            return '#000000'; // Vertical line color
-                                        },
-                                        paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                                        paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                                        paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-                                        paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                                        // Solid border around the entire table
-                                        hLineStyle: function (i, node) {
-                                            return null; // Solid line
-                                        },
-                                        vLineStyle: function (i, node) {
-                                            return null; // Solid line
-                                        },
-                                    },
-                                margin: [0, 0, 0, 10]
-                            }
-                        ],
-                        // Articulation Matrix
-                        [
-                            {
-                                text: 'Articulation Matrix', fontSize: 9, bold: true, margin: [0, 10, 0, 5]
-                            }
-                        ],
-                        [
-                            {
-                                table: {
-                                    widths: ['7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%', '7%','7%'],
-                                    body: [
-                                        [
-                                            { text: 'CO. No.', fontSize: 9, bold: true }, { text: 'PO1', fontSize: 9, bold: true }, { text: 'PO2', fontSize: 9, bold: true }, { text: 'PO3', fontSize: 9, bold: true }, { text: 'PO4', fontSize: 9, bold: true }, { text: 'PO5', fontSize: 9, bold: true }, { text: 'PO6', fontSize: 9, bold: true }, { text: 'PO7', fontSize: 9, bold: true }, { text: 'PO8', fontSize: 9, bold: true }, { text: 'PO9', fontSize: 9, bold: true }, { text: 'PO10', fontSize: 9, bold: true }, { text: 'PO11', fontSize: 9, bold: true }, { text: 'PSO1', fontSize: 9, bold: true }, { text: 'PSO2', fontSize: 9, bold: true }
-                                        ],
-                                        [
-                                            { text: '1', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '1', fontSize: 9 }, { text: '3', fontSize: 9 }, '', '', '', '', '', '', '', { text: '3', fontSize: 9 },''
-                                        ],
-                                        [
-                                            { text: '2', fontSize: 9 }, { text: '1', fontSize: 9 }, '', { text: '2', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, '', { text: '2', fontSize: 9 }, '', '', '', '', { text: '3', fontSize: 9 },''
-                                        ],
-                                        [
-                                            { text: '3', fontSize: 9 }, { text: '2', fontSize: 9 }, '', { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, '', { text: '3', fontSize: 9 }, '', '', '', '', { text: '3', fontSize: 9 },''
-                                        ],
-                                        [
-                                            { text: '4', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '1', fontSize: 9 }, { text: '3', fontSize: 9 }, '', '', '', '', '', '', '', { text: '3', fontSize: 9 },''
-                                        ],
-                                        [
-                                            { text: '5', fontSize: 9 }, { text: '2', fontSize: 9 }, '', { text: '3', fontSize: 9 }, { text: '3', fontSize: 9 }, { text: '1', fontSize: 9 }, '', { text: '3', fontSize: 9 }, '', '', '', '', { text: '2', fontSize: 9 },''
-                                        ],
-                                        // Additional rows as needed...
-                                    ]
-                                },
-                                layout: {
-                                    hLineWidth: function (i, node) {
-                                        return 1; // Horizontal line thickness
-                                    },
-                                    vLineWidth: function (i, node) {
-                                        return 1; // Vertical line thickness
-                                    },
-                                    hLineColor: function (i, node) {
-                                        return '#000000'; // Horizontal line color
-                                    },
-                                    vLineColor: function (i, node) {
-                                        return '#000000'; // Vertical line color
-                                    },
-                                    paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                                    paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                                    paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-                                    paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                                    // Solid border around the entire table
-                                    hLineStyle: function (i, node) {
-                                        return null; // Solid line
-                                    },
-                                    vLineStyle: function (i, node) {
-                                        return null; // Solid line
-                                    },
-                                },
-                                margin: [0, 0, 0, 10]
-                            }
-                        ],
-                        // Syllabus Sections
-                        [
-                            {
-                              table: {
-                                widths: [50, '*', 50], // Adjust column widths as needed
-                                body: [
-                                
-                                  ['UNIT I', 'MATHEMATICAL MODEL OF PHYSICAL SYSTEMS', '10 Hours'],
-                                  [{
-                                    text: ' ',
-                                    border: [false, false, false, false], // Remove borders for description row
-                                    colSpan: 3,
-                                    margin: [0, 5, 0, 0],
-                                    table: {
-                                      widths: ['*'],
-                                      body: [
-                                        [{ text: 'Introduction- Basic Elements of control Systems-Open loop and closed loop system - Elements of Control system - Transfer function of mechanical translational and rotational system electrical system - Electrical analogy of mechanical system - Block diagram reduction technique - Signal flow graph.', fontSize: 11 }]
-                                      ]
-                                    },
-                                    layout: 'noBorders'
-                                  }, {}, {}],
-                                  ['UNIT II', 'TIME DOMAIN ANALYSIS', '8 Hours'],
-                                  [{
-                                    text: ' ',
-                                    border: [false, false, false, false], // Remove borders for description row
-                                    colSpan: 3,
-                                    margin: [0, 5, 0, 0],
-                                    table: {
-                                      widths: ['*'],
-                                      body: [
-                                        [{ text: 'Standard test signals - Time response of first order and second order systems for unit step test signals - Time domain Specifications-Steady state response - Static error constants - steady state error - Effects of proportional derivative proportional integral systems.', fontSize: 11 }]
-                                      ]
-                                    },
-                                    layout: 'noBorders'
-                                  }, {}, {}],
-                                  ['UNIT III', 'FREQUENCY DOMAIN ANALYSIS', '9 Hours'],
-                                  [{
-                                    text: ' ',
-                                    border: [false, false, false, false], // Remove borders for description row
-                                    colSpan: 3,
-                                    margin: [0, 5, 0, 0],
-                                    table: {
-                                      widths: ['*'],
-                                      body: [
-                                        [{ text: 'Frequency response of systems - Frequency domain specifications - Correlation between frequency domain and time domain specifications - Bode plot Polar plot.', fontSize: 11 }]
-                                      ]
-                                    },
-                                    layout: 'noBorders'
-                                  }, {}, {}],
-                                  ['UNIT IV', 'STABILITY ANALYSIS OF CONTROL SYSTEM', '9 Hours'],
-                                  [{
-                                    text: ' ',
-                                    border: [false, false, false, false], // Remove borders for description row
-                                    colSpan: 3,
-                                    margin: [0, 5, 0, 0],
-                                    table: {
-                                      widths: ['*'],
-                                      body: [
-                                        [{ text: 'Concepts of stability - Necessary conditions for Stability-Characteristics equation - Location of roots in S plane for stability - Routh Hurwitz criterion-Nyquist stability criterion- Root Locus technique- Relative Stability.', fontSize: 11 }]
-                                      ]
-                                    },
-                                    layout: 'noBorders'
-                                  }, {}, {}],
-                                  ['UNIT V', 'COMPENSATOR DESIGN', '9 Hours'],
-                                  [{
-                                    text: ' ',
-                                    border: [false, false, false, false], // Remove borders for description row
-                                    colSpan: 3,
-                                    margin: [0, 5, 0, 0],
-                                    table: {
-                                      widths: ['*'],
-                                      body: [
-                                        [{ text: 'Compensators Deign of Lag compensator - Lead compensator - Lag-lead compensator (using Bode plot) - Concept of state state variable state model Controllability and observability.', fontSize: 11 }]
-                                      ]
-                                    },
-                                    layout: 'noBorders'
-                                  }, {}, {}],
-                                   [ { text: 'Tutorial', alignment: 'right', fontSize: 11, margin: [0, 10, 0, 10] ,colSpan: 2 },{ text: ''}, '15 Hours'],
-          [ { text: 'Total', alignment: 'right', fontSize: 11, margin: [0, 0, 0, 10], colSpan: 2 },{ text: '' }, '60 Hours']
-                                ]
-                              },
-                              layout: {
-                                hLineWidth: function (i, node) {
-                                    return 1; // Horizontal line thickness
-                                },
-                                vLineWidth: function (i, node) {
-                                    return 1; // Vertical line thickness
-                                },
-                                hLineColor: function (i, node) {
-                                    return '#000000'; // Horizontal line color
-                                },
-                                vLineColor: function (i, node) {
-                                    return '#000000'; // Vertical line color
-                                },
-                                paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                                paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                                paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-                                paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                                // Solid border around the entire table
-                                hLineStyle: function (i, node) {
-                                    return null; // Solid line
-                                },
-                                vLineStyle: function (i, node) {
-                                    return null; // Solid line
-                                },
-                            },
-                            margin: [0, 0, 0, 0]
-                            }
-                          ],
-                       
-                        // References
-                        [
-                            { text: 'References', fontSize: 10, bold: true, margin: [0, 10, 0, 5] },
-                        ],
-                        [
-                            {
-                                ul: [
-                                    { text: 'I.J.Nagrath and M.Gopal Control System Engineering NewAge International Publisher 2018', fontSize: 11 },
-                                    { text: 'M.Gopal Control System Principles and Design TataMcGraw-Hill 2012.', fontSize: 11 },
-                                    { text: 'K.Ogatta Modern Control Engineering Pearson Education NewDelhi 2015', fontSize: 11 },
-                                    { text: 'BenjaminC. Kuo Automatic Control Systems Prentice-Hall of India Pvt. Ltd. 2014', fontSize: 11 },
-                                    { text: 'M.N.Bandyopadhyay Control Engineering Theory and Practice 9thEdition John Wiley & Sons 2006.', fontSize: 11 },
-                                    { text: 'https://archive.nptel.ac.in/courses/107/106/107106081/', fontSize: 11 }
-                                ],
-                                margin: [0, 0, 0, 10]
-                            }
-                        ]
-                    ]
+                    widths: ['auto', '*'],
+                    body: section.items.map(item => [Object.keys(item)[0], item[Object.keys(item)[0]]])
                 },
                 layout: {
                     hLineWidth: function (i, node) {
@@ -392,10 +230,88 @@ exports.getPDF = (req, res) => {
                     vLineStyle: function (i, node) {
                         return null; // Solid line
                     },
-                }
-            }
-        ],
-       
+                },
+                margin: [0, 0, 0, 10]
+            });
+        } 
+        else if (section.type === 'matrix') {
+            // Articulation Matrix
+            const matrixHeader = Object.keys(section.matrix[0]).map(key => ({
+                text: key,
+                fontSize: 9,
+                bold: true
+            }));
+    
+            const matrixBody = section.matrix.map(row => Object.values(row).map(value => ({
+                text: value.toString(),
+                fontSize: 9
+            })));
+    
+            content.push({
+                table: {
+                    widths: Array(matrixHeader.length).fill('*'),
+                    body: [matrixHeader, ...matrixBody]
+                },
+                layout: {
+                    hLineWidth: function () { return 1; },
+                    vLineWidth: function () { return 1; },
+                    hLineColor: function () { return '#000000'; },
+                    vLineColor: function () { return '#000000'; },
+                    paddingLeft: function () { return 8; },
+                    paddingRight: function () { return 8; },
+                    paddingTop: function () { return 4; },
+                    paddingBottom: function () { return 4; }
+                },
+                margin: [0, 0, 0, 10]
+            });
+        } 
+        else if (section.type === 'syllabus') {
+            // Syllabus Sections
+            const syllabusBody = [];
+    
+            section.units.forEach(unit => {
+                // Add unit row
+                syllabusBody.push([
+                    { text: unit.unit, fontSize: 11, bold: true },
+                    { text: unit.title, fontSize: 11 },
+                    { text: unit.hours, fontSize: 11 }
+                ]);
+    
+                // Add unit description row under the unit row
+                syllabusBody.push([
+                    {
+                        text: unit.description,
+                        border: [false, false, false, false],
+                        colSpan: 3,
+                        margin: [0, 5, 0, 0],
+                        fontSize: 11
+                    }, {}, {}
+                ]);
+            });
+    
+            content.push({
+                table: {
+                    widths: [50, '*', 50],
+                    body: syllabusBody
+                },
+                layout: {
+                    hLineWidth: function () { return 1; },
+                    vLineWidth: function () { return 1; },
+                    hLineColor: function () { return '#000000'; },
+                    vLineColor: function () { return '#000000'; },
+                    paddingLeft: function () { return 8; },
+                    paddingRight: function () { return 8; },
+                    paddingTop: function () { return 4; },
+                    paddingBottom: function () { return 4; }
+                },
+                margin: [0, 0, 0, 10]
+            });
+        }
+    });
+    
+
+    var docDefinition = {
+        content: content,
         defaultStyle: {
             font: 'Roboto'
         }
