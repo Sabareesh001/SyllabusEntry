@@ -14,11 +14,11 @@ exports.getAllProgrammeOutcomes = async (req, res) => {
 exports.getProgrammeOutcomeById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT * FROM master_programme_outcome WHERE id = ?', [id]);
+        const [rows] = await pool.query('SELECT * FROM master_programme_outcome WHERE regulation = ?', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Programme outcome not found' });
         }
-        res.json(rows[0]);
+        res.json(rows);
     } catch (error) {
         console.error('Error fetching programme outcome:', error);
         res.status(500).json({ message: 'Error fetching programme outcome' });

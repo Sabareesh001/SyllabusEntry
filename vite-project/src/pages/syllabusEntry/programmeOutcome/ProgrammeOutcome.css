@@ -1,0 +1,23 @@
+.deletePoContainer{
+    
+}
+
+.programmeOutcomeTableContainer td {
+    position: relative;
+    transition: width 0.3s ease-in-out;
+    min-width: 100px; /* Adjust as needed */
+}
+
+.programmeOutcomeTableContainer .icon-button-container {
+    align-items: center;
+}
+
+.programmeOutcomeTableContainer .delete-icon {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    margin-left: 5px;
+}
+
+.programmeOutcomeTableContainer td:hover .delete-icon {
+    opacity: 1;
+}

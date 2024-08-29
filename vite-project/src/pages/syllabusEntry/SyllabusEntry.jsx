@@ -1,7 +1,7 @@
 import "./SyllabusEntry.css";
 import Card from "../../components/card/Card";
 import Select, { components } from "react-select";
-import { Add, ArrowDropDown, Edit, Info } from "@mui/icons-material";
+import { Add, ArrowDropDown, Download, Edit, Info } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -241,8 +241,16 @@ const SyllabusEntry = () => {
                   <Button size={"small"} label={<div className="iconButtonContainer"><Edit/> PSOs</div>}/>
                     </div>
                    
-                   <div>
-                   <Button onClick={()=>{setCourseModalOpen(true)}} size={"small"} label={<div className="iconButtonContainer"><Edit/>Edit Courses</div>} />
+                   <div className="downloadAndEditCoursesContainer">
+                   <Button size={"small"} label={
+                    <div  className="iconButtonContainer">
+                    <Download/>Download Department Pdf
+                    </div>}/>
+                   <Button onClick={()=>{setCourseModalOpen(true)}} size={"small"} label={
+                    <div className="iconButtonContainer">
+                    <Edit/>Edit Courses
+                    </div>} />
+                    
                     </div>
                 </div>
             ) : null}
@@ -258,9 +266,9 @@ const SyllabusEntry = () => {
                                             <p>{course.course_code}</p>
                                             <p>{course.course_name}</p>
                                         </div>
-                                        <div>
-                                            <ArrowDropDown />
-                                        </div>
+                                        <div className="icons">
+                                            <Download/>
+                                            </div>
                                     </div>
                                     <div className="courseStateIndicatorContainer">
                                         {courseModifyOptions.map((option, i) => (

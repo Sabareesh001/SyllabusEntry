@@ -1,61 +1,76 @@
-import { useState } from 'react';
-import './ProgrammeSpecificOutcome.css'
+import { useEffect, useState } from 'react';
+import './ProgrammeSpecificOutcome.css';
 import { TextField } from '@mui/material';
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
+import apiHost from '../../../../config/config';
 
-const ProgrammeSpecificOutcome = ()=>{
-    const [programmeSpecificOutcomes,setProgrammeSpecificOutcomes] = useState([
-        {
-          id:1,
-          po:"PSO1",
-        },{
-            id:2,
-            po:"PSO2"
+const ProgrammeSpecificOutcome = ({ courseId, regulation }) => {
+    const [cookies] = useCookies(['auth']);
+    const [programmeSpecificOutcomes, setProgrammeSpecificOutcomes] = useState([]);
+    const [courseOutcomes, setCourseOutcomes] = useState([]);
+
+    useEffect(() => {
+        // Fetch course outcomes from the backend
+        const fetchCourseOutcomes = async () => {
+            try {
+                const response = await axios.get(`${apiHost}/course-outcomes/${courseId}`, {
+                    headers: { auth: cookies.auth }
+                });
+                setCourseOutcomes(response.data);
+            } catch (error) {
+                console.error('Error fetching course outcomes:', error);
+            }
+        };
+
+        fetchCourseOutcomes();
+    }, [courseId, cookies.auth]);
+
+    const fetchProgrammeSpecificOutcomes = async (id) => {
+        try {
+            const response = await axios.get(`${apiHost}/programme-specific-outcomes/${id}`, {
+                headers: { auth: cookies.auth }
+            });
+            setProgrammeSpecificOutcomes(response.data);
+        } catch (error) {
+            console.error('Error fetching programme-specific outcomes:', error);
         }
-    ]);
-    const [courseOutcomes,setCourseOutcomes] = useState([
-        {
-        id:1,
-        co:"CO1"
-    },
-    {
-        id:2,
-        co:"CO2"
-    }
-]);
-     return(
+    };
+
+    useEffect(() => {
+        if (regulation) {
+            fetchProgrammeSpecificOutcomes(regulation);
+        }
+    }, [regulation, cookies.auth]);
+
+    return (
         <div className='programmeOutcomeContainer'>
             <div className='programmeOutcomeTableContainer'>
                 <table>
                     <thead>
-                        <th>
-                          CO. No.
-                        </th>
-                        {
-                            programmeSpecificOutcomes.map((data)=>(
-                              <th>{data.po}</th>
-                            ))
-                        }
+                        <tr>
+                            <th>CO. No.</th>
+                            {programmeSpecificOutcomes.map((data) => (
+                                <th key={data.id}>{data.programme_specific_outcome}</th>
+                            ))}
+                        </tr>
                     </thead>
                     <tbody>
-                        {
-                           courseOutcomes.map((data)=>(
-                            <tr>
-                            <td>{data.co}</td>
-                            {
-                                programmeSpecificOutcomes.map((_,i)=>(
-                                  <td>
-                                    <TextField style={{backgroundColor:"white"}} type='number'/>
-                                  </td>
-                                ))
-                            }
+                        {courseOutcomes.map((data, i) => (
+                            <tr key={data.id}>
+                                <td>{`CO${i + 1}`}</td>
+                                {programmeSpecificOutcomes.map((_, j) => (
+                                    <td key={j}>
+                                        <TextField style={{ backgroundColor: 'white' }} type='number' />
+                                    </td>
+                                ))}
                             </tr>
-                           ))
-                        }
+                        ))}
                     </tbody>
                 </table>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ProgrammeSpecificOutcome
+export default ProgrammeSpecificOutcome;

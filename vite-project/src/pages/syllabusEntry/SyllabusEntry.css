@@ -71,3 +71,7 @@
 .courseModalContainer .addCoursesButtonContainer{
      justify-content: flex-end;
 }
+.downloadAndEditCoursesContainer{
+    display: flex;
+    gap: 10px;
+}
