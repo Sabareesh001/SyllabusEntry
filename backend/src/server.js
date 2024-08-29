@@ -13,10 +13,12 @@ const programmeSpecificRoutes = require("./routes/programmeSpecificOutcome");
 const coursePoMappingRoutes = require("./routes/coursePoMapping");
 const coursePsoMappingRoutes = require("./routes/coursePsoMapping")
 const regulationRoutes = require("./routes/regulation")
+const reportRoutes =require('./routes//report')
 // Middleware
 app.use(express.json());
 
 // API Routes
+app.use('/',reportRoutes)
 app.use("/auth", AuthRoutes); // Unprotected routes for authentication
 app.use("/api", verifyToken); // Protected routes
 app.use(

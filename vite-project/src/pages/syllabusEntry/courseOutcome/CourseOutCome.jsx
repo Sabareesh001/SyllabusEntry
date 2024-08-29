@@ -122,7 +122,7 @@ const CourseOutcome = ({ courseId }) => {
                 <table>
                     <thead>
                         <tr>
-                            <th>S.no</th>
+                            <th>CO.no</th>
                             <th>Course Outcome</th>
                             <th>Unit</th>
                             <th>Syllabus</th>
