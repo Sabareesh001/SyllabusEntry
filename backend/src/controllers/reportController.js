@@ -167,9 +167,9 @@ exports.getPDF = async(req, res) => {
                     vLineColor: function (i, node) {
                         return '#000000'; // Vertical line color
                     },
-                    paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-                    paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                    paddingTop: function(i, node) { return 8; }, // Padding on the top of cells
+                    paddingLeft: function(i, node) { return 4; }, // Padding on the left of cells
+                    paddingRight: function(i, node) { return 4; }, // Padding on the right of cells
+                    paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
                     paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
                 },
                 margin: [0, 0, 0, 0]
@@ -184,7 +184,7 @@ exports.getPDF = async(req, res) => {
         // Sections like Objectives, Outcomes, etc.
         courseData.sections.forEach(section => {
             // Add section title
-            pageContent.push({ text: section.title, fontSize: 11, bold: true, margin: [0, 10, 0, 5] });
+            pageContent.push({ text: section.title, fontSize: 11, bold: true, margin: [0, 0, 0, 0] });
         
             // Handle different section types
             if (section.type === 'objectives' || section.type === 'references') {
@@ -196,7 +196,7 @@ exports.getPDF = async(req, res) => {
                 pageContent.push({
                     table: {
                         widths: ['auto', '*'],
-                        body: section.items.map(item => [Object.keys(item)[0], item[Object.keys(item)[0]]])
+                        body: section.items.map(item => [Object.keys(item)[0], item[Object.keys(item)[0]].replace(/\r?\n?/g, '')])
                     },
                     layout: {
                         hLineWidth: function (i, node) {
@@ -213,7 +213,7 @@ exports.getPDF = async(req, res) => {
                         },
                         paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
                         paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-                        paddingTop: function(i, node) { return 8; }, // Padding on the top of cells
+                        paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
                         paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
                         border: [true, true, true, true] // Add border around the entire table
                     },
@@ -251,7 +251,7 @@ exports.getPDF = async(req, res) => {
                     syllabusBody.push([
                         { text: unit.unit, fontSize: 11, bold: true },
                         { text: unit.title, fontSize: 11 },
-                        { text: unit.hours, fontSize: 11 }
+                        { text: unit.hours+' hours', fontSize: 11 }
                     ]);
         
                     // Add unit description row under the unit row
@@ -403,7 +403,7 @@ exports.getData = async (req,res) =>{
       const syllabusUnits = outcomesData.map(outcome => ({
         unit: "",
         title:outcome.unit,
-        hours: outcome.hours + 'hours',
+        hours: outcome.hours,
         description: outcome.syllabus,
       }));
     
