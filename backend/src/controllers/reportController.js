@@ -267,7 +267,7 @@ exports.getPDF = async(req, res) => {
         
                 pageContent.push({
                     table: {
-                        widths: ["20%", '70%', "10%"],
+                        widths: ["10%", '70%', "20%"],
                         body: syllabusBody
                     },
                     layout: {
@@ -401,9 +401,9 @@ exports.getData = async (req,res) =>{
     
       // Assemble Syllabus from Course Outcomes
       const syllabusUnits = outcomesData.map(outcome => ({
-        unit: outcome.unit,
-        title: outcome.course_outcome,
-        hours: outcome.hours,
+        unit: "",
+        title:outcome.unit,
+        hours: outcome.hours + 'hours',
         description: outcome.syllabus,
       }));
     
@@ -445,7 +445,7 @@ exports.getData = async (req,res) =>{
           {
             type: "outcomes",
             title: "Course Outcomes (COs)",
-            items: outcomesData.map(co => ({ [`CO${co.id}`]: co.course_outcome }))
+            items: outcomesData.map((co,i)=> ({ [`CO${i+1}`]: co.course_outcome }))
           },
           {
             type: "matrix",

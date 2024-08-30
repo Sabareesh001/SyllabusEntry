@@ -82,7 +82,7 @@ const handleLogout = ()=>{
       <Link to="dashboard" onClick={closeMobileMenu}>
         <div style={{ display: "flex", width: "100%",fontSize:"100px", justifyContent: "center", alignItems: "center" ,gap:'10px'}}>
          <SchoolRounded sx={{fontSize:"40px"}}/>
-          <h6 className="sidebarTitle">Paper Allocation</h6>
+          <h6 className="sidebarTitle">Syllabus Entry</h6>
         </div>
         </Link>
        
