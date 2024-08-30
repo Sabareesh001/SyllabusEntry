@@ -18,7 +18,7 @@ exports.getCoursePoMappingById = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM course_po_mapping WHERE course_outcome = ?', [id]);
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'Course PO mapping not found' });
+            return res.status(204).json({message: 'Course PO mapping not found' });
         }
         res.json(rows);
     } catch (error) {

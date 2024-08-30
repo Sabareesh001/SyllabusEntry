@@ -40,7 +40,7 @@ exports.getCoursePsoMappingByOutcome = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM course_pso_mapping WHERE course_outcome = ?', [id]);
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'Course PSO mapping not found' });
+            return res.status(200).json({ message: 'Course PSO mapping not found' });
         }
         res.json(rows);
     } catch (error) {

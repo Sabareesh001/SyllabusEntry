@@ -4,6 +4,7 @@ const axios = require('axios')
 const apiHost = `http://localhost:3000`
 exports.getPDF = async(req, res) => {
     // Example JSON data (this could come from a request or database)
+    const {courseId,regulationId} = req.query
     let courseData = {
         "course": {
             "code": "22EE504",
@@ -123,93 +124,35 @@ exports.getPDF = async(req, res) => {
             }
         ]
     };
-    
-    await axios.get(`${apiHost}/reportData/3/1`).then((res)=>{
-         courseData=res.data;
-    })
-
-    var fonts = {
-        Roboto: {
-            normal: path.join(__dirname, '../assets/times.ttf'),
-            bold: path.join(__dirname, '../assets/times.ttf'),
-            italics: path.join(__dirname, '../assets/times.ttf'),
-            bolditalics: path.join(__dirname, '../assets/times.ttf')
+    try {
+        const response = await axios.get(`${apiHost}/reportData/${courseId}/${regulationId}`);
+        if (response.status === 210) {
+            res.status(500).json({ message: "No Sufficient Data" });
+            return; // Exit the function to prevent further processing
         }
-    };
-
-    var printer = new PdfPrinter(fonts);
-
-    // Dynamic content generation based on JSON data
-    const content = [];
-
-    // Course Information Section
-    content.push({
-        table: {
-            widths: ['10%', '50%', '10%', '10%', '10%', '10%'],
-            body: [
-                [
-                    { text: courseData.course.code, fontSize: 11, bold: true },
-                    { text: courseData.course.title, fontSize: 11, bold: true },
-                    { text: courseData.course.credits.lecture.toString(), fontSize: 11 },
-                    { text: courseData.course.credits.tutorial.toString(), fontSize: 11 },
-                    { text: courseData.course.credits.practical.toString(), fontSize: 11 },
-                    { text: courseData.course.credits.total.toString(), fontSize: 11 }
-                ]
-            ]
-        },
-        layout: {
-            hLineWidth: function (i, node) {
-                return 1; // Horizontal line thickness
-            },
-            vLineWidth: function (i, node) {
-                return 1; // Vertical line thickness
-            },
-            hLineColor: function (i, node) {
-                return '#000000'; // Horizontal line color
-            },
-            vLineColor: function (i, node) {
-                return '#000000'; // Vertical line color
-            },
-            paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
-            paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
-            paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
-            paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-            // Solid border around the entire table
-            hLineStyle: function (i, node) {
-                return null; // Solid line
-            },
-            vLineStyle: function (i, node) {
-                return null; // Solid line
-            },
-        },
-        margin: [0, 0, 0, 0]
-    });
+        
+        const courseData = response.data; // Correctly use response.data
     
-    // Sections like Objectives, Outcomes, etc.
-    courseData.sections.forEach(section => {
-        // Add section title
-        content.push({
-            text: section.title,
-            fontSize: 11,
-            bold: true,
-          
-            margin: [0, 10, 0, 5]
-        });
+        var fonts = {
+            Roboto: {
+                normal: path.join(__dirname, '../assets/timesNewRoman/regular.ttf'),
+                bold: path.join(__dirname, '../assets/timesNewRoman/bold.ttf'),
+                italics: path.join(__dirname, '../assets/timesNewRoman/italic.ttf'),
+                bolditalics: path.join(__dirname, '../assets/timesNewRoman/boldItalic.ttf')
+            }
+        };
     
-        // Handle different section types
-        if (section.type === 'objectives' || section.type === 'references') {
-            content.push({
-                ul: section.items.map(item => ({
-                    text: item,
-                    fontSize: 11
-                })),
-                margin: [0, 0, 0, 10]
-            });
-        } else if (section.type === 'outcomes') {
-            content.push({
+        var printer = new PdfPrinter(fonts);
+    
+        // Dynamic content generation based on JSON data
+        const content = [];
+    
+        // Function to create a table with a single column and border
+        function createSingleColumnTable(contentArray) {
+            return {
                 table: {
-                    widths: ['auto', '*'],
-                    body: section.items.map(item => [Object.keys(item)[0], item[Object.keys(item)[0]]])
+                    widths: ['*'],
+                    body: contentArray.map(item => [item])
                 },
                 layout: {
                     hLineWidth: function (i, node) {
@@ -226,137 +169,237 @@ exports.getPDF = async(req, res) => {
                     },
                     paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
                     paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
+                    paddingTop: function(i, node) { return 8; }, // Padding on the top of cells
+                    paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
+                },
+                margin: [0, 0, 0, 0]
+            };
+        }
+        
+        // Add all content to an array
+        const pageContent = [];
+        
+        // Course Information Section
+        
+        // Sections like Objectives, Outcomes, etc.
+        courseData.sections.forEach(section => {
+            // Add section title
+            pageContent.push({ text: section.title, fontSize: 11, bold: true, margin: [0, 10, 0, 5] });
+        
+            // Handle different section types
+            if (section.type === 'objectives' || section.type === 'references') {
+                pageContent.push({
+                    ul: section.items.map(item => ({ text: item, fontSize: 11 })),
+                    margin: [0, 0, 0, 0]
+                });
+            } else if (section.type === 'outcomes') {
+                pageContent.push({
+                    table: {
+                        widths: ['auto', '*'],
+                        body: section.items.map(item => [Object.keys(item)[0], item[Object.keys(item)[0]]])
+                    },
+                    layout: {
+                        hLineWidth: function (i, node) {
+                            return 1; // Horizontal line thickness
+                        },
+                        vLineWidth: function (i, node) {
+                            return 1; // Vertical line thickness
+                        },
+                        hLineColor: function (i, node) {
+                            return '#000000'; // Horizontal line color
+                        },
+                        vLineColor: function (i, node) {
+                            return '#000000'; // Vertical line color
+                        },
+                        paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
+                        paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
+                        paddingTop: function(i, node) { return 8; }, // Padding on the top of cells
+                        paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
+                        border: [true, true, true, true] // Add border around the entire table
+                    },
+                    margin: [10, 10, 10, 10]
+                });
+            } else if (section.type === 'matrix') {
+                // Articulation Matrix
+                const matrixHeader = Object.keys(section.matrix[0]).map(key => ({ text: key, fontSize: 9, bold: true }));
+                const matrixBody = section.matrix.map(row => Object.values(row).map(value => ({ text: value.toString(), fontSize: 9 })));
+        
+                pageContent.push({
+                    table: {
+                        widths: Array(matrixHeader.length).fill(`${Math.round(100 / (matrixHeader.length+1) )}%`),
+                        body: [matrixHeader, ...matrixBody]
+                    },
+                    layout: {
+                        hLineWidth: function () { return 1; },
+                        vLineWidth: function () { return 1; },
+                        hLineColor: function () { return '#000000'; },
+                        vLineColor: function () { return '#000000'; },
+                        paddingLeft: function () { return 8; },
+                        paddingRight: function () { return 8; },
+                        paddingTop: function () { return 4; },
+                        paddingBottom: function () { return 4; },
+                        border: [true, true, true, true] // Add border around the entire table
+                    },
+                    margin: [10, 10, 10, 10]
+                });
+            } else if (section.type === 'syllabus') {
+                // Syllabus Sections
+                const syllabusBody = [];
+        
+                section.units.forEach(unit => {
+                    // Add unit row
+                    syllabusBody.push([
+                        { text: unit.unit, fontSize: 11, bold: true },
+                        { text: unit.title, fontSize: 11 },
+                        { text: unit.hours, fontSize: 11 }
+                    ]);
+        
+                    // Add unit description row under the unit row
+                    syllabusBody.push([
+                        {
+                            text: unit.description,
+                            border: [false, false, false, false],
+                            colSpan: 3,
+                            fontSize: 11
+                        }, {}, {}
+                    ]);
+                });
+        
+                pageContent.push({
+                    table: {
+                        widths: ["20%", '70%', "10%"],
+                        body: syllabusBody
+                    },
+                    layout: {
+                        hLineWidth: function () { return 1; },
+                        vLineWidth: function () { return 1; },
+                        hLineColor: function () { return '#000000'; },
+                        vLineColor: function () { return '#000000'; },
+                        paddingLeft: function () { return 8; },
+                        paddingRight: function () { return 8; },
+                        paddingTop: function () { return 4; },
+                        paddingBottom: function () { return 4; },
+                    },
+                    margin: [0, 0, 0, 0]
+                });
+            }
+        });
+        
+        // Wrap the entire content in a single-column bordered table
+        var finalContent = createSingleColumnTable(pageContent);
+        finalContent = [
+            {
+                table: {
+                    widths: ['20%', '60%', '5%', '5%', '5%', '5%'],
+                    body: [
+                        [
+                            { text: courseData.course.code, fontSize: 11, bold: true },
+                            { text: courseData.course.title.toUpperCase(), fontSize: 11, bold: true },
+                            { text: courseData.course.credits.lecture.toString(), fontSize: 11 },
+                            { text: courseData.course.credits.tutorial.toString(), fontSize: 11 },
+                            { text: courseData.course.credits.practical.toString(), fontSize: 11 },
+                            { text: courseData.course.credits.total.toString(), fontSize: 11 }
+                        ]
+                    ]
+                },
+                layout: {
+                    hLineWidth: function (i, node) {
+                        // Hide the bottom border only
+                        return (i === node.table.body.length) ? 0 : 1;
+                    },
+                    vLineWidth: function (i, node) {
+                        return 1; // Vertical line thickness
+                    },
+                    hLineColor: function (i, node) {
+                        return '#000000'; // Horizontal line color
+                    },
+                    vLineColor: function (i, node) {
+                        return '#000000'; // Vertical line color
+                    },
+                    paddingLeft: function(i, node) { return 8; }, // Padding on the left of cells
+                    paddingRight: function(i, node) { return 8; }, // Padding on the right of cells
                     paddingTop: function(i, node) { return 4; }, // Padding on the top of cells
                     paddingBottom: function(i, node) { return 4; }, // Padding on the bottom of cells
-                    // Solid border around the entire table
-                    hLineStyle: function (i, node) {
-                        return null; // Solid line
-                    },
-                    vLineStyle: function (i, node) {
-                        return null; // Solid line
-                    },
+                    border: [true, true, true, true] // Add border around the entire table
                 },
-                margin: [0, 0, 0, 10]
-            });
-        } 
-        else if (section.type === 'matrix') {
-            // Articulation Matrix
-            const matrixHeader = Object.keys(section.matrix[0]).map(key => ({
-                text: key,
-                fontSize: 9,
-                bold: true
-            }));
+                margin: [0, 0, 0, 0],
+            },
+            finalContent
+        ];
+        
+        console.log(finalContent);
+        
+        var docDefinition = {
+            content: finalContent,
+            defaultStyle: {
+                font: 'Roboto'
+            }
+        };
     
-            const matrixBody = section.matrix.map(row => Object.values(row).map(value => ({
-                text: value.toString(),
-                fontSize: 9
-            })));
+        // Generate PDF
+        res.setHeader('Content-Type', 'application/pdf');
+        var pdfDoc = printer.createPdfKitDocument(docDefinition);
+        pdfDoc.pipe(res);
+        pdfDoc.end();
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ message: "Error generating report: " + error.message });
+    }
     
-            content.push({
-                table: {
-                    widths: Array(matrixHeader.length).fill('*'),
-                    body: [matrixHeader, ...matrixBody]
-                },
-                layout: {
-                    hLineWidth: function () { return 1; },
-                    vLineWidth: function () { return 1; },
-                    hLineColor: function () { return '#000000'; },
-                    vLineColor: function () { return '#000000'; },
-                    paddingLeft: function () { return 8; },
-                    paddingRight: function () { return 8; },
-                    paddingTop: function () { return 4; },
-                    paddingBottom: function () { return 4; }
-                },
-                margin: [0, 0, 0, 10]
-            });
-        } 
-        else if (section.type === 'syllabus') {
-            // Syllabus Sections
-            const syllabusBody = [];
-    
-            section.units.forEach(unit => {
-                // Add unit row
-                syllabusBody.push([
-                    { text: unit.unit, fontSize: 11, bold: true },
-                    { text: unit.title, fontSize: 11 },
-                    { text: unit.hours, fontSize: 11 }
-                ]);
-    
-                // Add unit description row under the unit row
-                syllabusBody.push([
-                    {
-                        text: unit.description,
-                        border: [false, false, false, false],
-                        colSpan: 3,
-                        margin: [0, 5, 0, 0],
-                        fontSize: 11
-                    }, {}, {}
-                ]);
-            });
-    
-            content.push({
-                table: {
-                    widths: [50, '*', 50],
-                    body: syllabusBody
-                },
-                layout: {
-                    hLineWidth: function () { return 1; },
-                    vLineWidth: function () { return 1; },
-                    hLineColor: function () { return '#000000'; },
-                    vLineColor: function () { return '#000000'; },
-                    paddingLeft: function () { return 8; },
-                    paddingRight: function () { return 8; },
-                    paddingTop: function () { return 4; },
-                    paddingBottom: function () { return 4; }
-                },
-                margin: [0, 0, 0, 10]
-            });
-        }
-    });
-    
-
-    var docDefinition = {
-        content: content,
-        defaultStyle: {
-            font: 'Roboto'
-        }
-    };
-
-    res.setHeader('Content-Type', 'application/pdf');
-    var pdfDoc = printer.createPdfKitDocument(docDefinition);
-    pdfDoc.pipe(res);
-    pdfDoc.end();
 };
 
 exports.getData = async (req,res) =>{
-    const {courseId,regulationId} = req.params;
-    
+    const { courseId, regulationId } = req.params;
     try {
       // Fetch Course Details
       const courseDetails = await axios.get(`${apiHost}/coursesById?id=${courseId}`);
       const course = courseDetails.data[0];
-  
+    
       // Fetch Course Objectives
       const courseObjectives = await axios.get(`${apiHost}/course-objectives/${courseId}`);
       const objectives = courseObjectives.data;
-  
-      // Fetch Programme Outcomes (assuming regulation ID is needed)
-      const regulationId = course.regulation;
+    
+      // Fetch Programme Outcomes
       const programmeOutcomes = await axios.get(`${apiHost}/programme-outcomes/${regulationId}`);
       const outcomes = programmeOutcomes.data;
-  
+    
+      // Fetch Programme-Specific Outcomes
+      const departmentId = 1;
+      const programmeSpecificOutcomes = await axios.get(`${apiHost}/programme-specific-outcomes/${departmentId}/${regulationId}`);
+      const specificOutcomes = programmeSpecificOutcomes.data;
+    
       // Fetch Course Outcomes
-      const courseOutcomes = await axios.get(`${apiHost}/course-outcomes-by-id/${courseId}`);
+      const courseOutcomes = await axios.get(`${apiHost}/course-outcomes/${courseId}`);
       const outcomesData = courseOutcomes.data;
-  
+    
       // Fetch Course-PO Mappings for each CO
       const poMappingsPromises = outcomesData.map(co => axios.get(`${apiHost}/course-po-mappings/${co.id}`));
-      const poMappings = await Promise.all(poMappingsPromises);
-  
+      const poMappingsResults = await Promise.all(poMappingsPromises);
+    
       // Fetch Course-PSO Mappings for each CO
       const psoMappingsPromises = outcomesData.map(co => axios.get(`${apiHost}/course-pso-mappings/${co.id}`));
-      const psoMappings = await Promise.all(psoMappingsPromises);
-  
+      const psoMappingsResults = await Promise.all(psoMappingsPromises);
+    
+      // Determine which POs and PSOs are actually mapped
+      const mappedPOs = new Set();
+      const mappedPSOs = new Set();
+    
+      poMappingsResults.forEach(result => {
+        if (Array.isArray(result.data)) {
+          result.data.forEach(po => mappedPOs.add(po.po));
+        }
+      });
+    
+      psoMappingsResults.forEach(result => {
+        if (Array.isArray(result.data)) {
+          result.data.forEach(pso => mappedPSOs.add(pso.pso));
+        }
+      });
+    
+      // Filter the POs and PSOs based on the mappings
+      const filteredOutcomes = outcomes.filter(outcome => mappedPOs.has(outcome.id));
+      const filteredSpecificOutcomes = specificOutcomes.filter(outcome => mappedPSOs.has(outcome.id));
+    
       // Assemble Syllabus from Course Outcomes
       const syllabusUnits = outcomesData.map(outcome => ({
         unit: outcome.unit,
@@ -364,10 +407,14 @@ exports.getData = async (req,res) =>{
         hours: outcome.hours,
         description: outcome.syllabus,
       }));
-  
+    
+      // Calculate tutorial hours
+      const tutorialHours = course.tutorial * 15;
+      const totalHours = syllabusUnits.reduce((sum, unit) => sum + unit.hours, 0) + tutorialHours;
+    
       // Fetch References
-      const references = course.references.split(';'); // Assuming ';' is the delimiter
-  
+      const references = course.References.split(';'); // Assuming ';' is the delimiter
+    
       // Combine all data
       const courseData = {
         course: {
@@ -389,7 +436,12 @@ exports.getData = async (req,res) =>{
           {
             type: "outcomes",
             title: "Programme Outcomes (POs)",
-            items: outcomes.map(outcome => ({ [`PO${outcome.id}`]: outcome.programme_outcome }))
+            items: filteredOutcomes.map((outcome, index) => ({ [`PO${index + 1}`]: outcome.programme_outcome }))
+          },
+          {
+            type: "outcomes",
+            title: "Programme-Specific Outcomes (PSOs)",
+            items: filteredSpecificOutcomes.map((outcome, index) => ({ [`PSO${index + 1}`]: outcome.programme_specific_outcome }))
           },
           {
             type: "outcomes",
@@ -399,16 +451,36 @@ exports.getData = async (req,res) =>{
           {
             type: "matrix",
             title: "Articulation Matrix",
-            matrix: outcomesData.map((co, index) => ({
-              "CO.No.": `${co.id}`,
-              ...poMappings[index].data.reduce((acc, po) => ({ ...acc, [`PO${po.po}`]: po.level }), {}),
-              ...psoMappings[index].data.reduce((acc, pso) => ({ ...acc, [`PSO${pso.pso}`]: pso.level }), {})
-            }))
+            matrix: outcomesData.map((co, index) => {
+              const poLevels = outcomes.reduce((acc, po, i) => {
+                const poData = poMappingsResults[index]?.data || [];
+                const poMapping = Array.isArray(poData) ? poData.find(p => p.po === po.id) : null;
+                acc[`PO${i + 1}`] = poMapping ? poMapping.level : '-'; // '-' if no level assigned
+                return acc;
+              }, {});
+    
+              const psoLevels = specificOutcomes.reduce((acc, pso, i) => {
+                const psoData = psoMappingsResults[index]?.data || [];
+                const psoMapping = Array.isArray(psoData) ? psoData.find(p => p.pso === pso.id) : null;
+                acc[`PSO${i + 1}`] = psoMapping ? psoMapping.level : '-'; // '-' if no level assigned
+                return acc;
+              }, {});
+    
+              return {
+                "CO.No.": `${co.id}`,
+                ...poLevels,
+                ...psoLevels
+              };
+            })
           },
           {
             type: "syllabus",
-            title: "Syllabus",
-            units: syllabusUnits
+            title: "",
+            units: [
+              ...syllabusUnits,
+              { unit: "", title: "Tutorial", hours: tutorialHours, description: "" },
+              { unit: "", title: "Total Hours", hours: totalHours, description: "" }
+            ]
           },
           {
             type: "references",
@@ -417,10 +489,13 @@ exports.getData = async (req,res) =>{
           }
         ]
       };
-  
-      res.json(courseData)
+    
+      res.json(courseData);
     } catch (error) {
-      console.error('Error fetching course data:',error);
+      console.error('Error fetching course data:', error);
+      res.status(210).json({ message: 'Error fetching course data' });
     }
+    
+    
   }
   

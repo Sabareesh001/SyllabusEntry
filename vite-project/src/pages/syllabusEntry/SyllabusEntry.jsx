@@ -24,6 +24,7 @@ import {toast,ToastContainer} from 'react-toastify'
 import EditPo from "./editPO/EditPo";
 import EditPso from "./editPso/EditPso";
 import RegulationModal from "./regulation/Regulation";
+import Reference from "./references/References";
 const SyllabusEntry = () => {
     const [isRegulationModalOpen, setRegulationModalOpen] = useState(false);
     const [fromYear, setFromYear] = useState(null);
@@ -76,12 +77,16 @@ const SyllabusEntry = () => {
         {
             title:"PSOs",
             component:<ProgrammeSpecificOutcome/>
+        },
+        {
+            title:"References",
+            component:<Reference/>
         }
     ]);
 
     useEffect(() => {
         if (courses?.length > 0) {
-            const newActiveStateArray = Array(courses.length).fill(Array(4).fill(false));
+            const newActiveStateArray = Array(courses.length).fill(Array(courseModifyOptions.length).fill(false));
             setActiveIndicatorsState(newActiveStateArray);
         }
     }, [courses]);
@@ -227,6 +232,31 @@ useEffect(()=>{
    useEffect(()=>{
     console.log(regulation)
    },[regulation])
+
+   const handleCourseDownload = async (courseId) => {
+    try {
+      // Make the request to the backend API
+      const response = await axios.get(`${apiHost}/report`, {
+        params: { courseId: courseId ,regulationId : regulation.value}, // Pass the courseId as a query parameter
+        responseType: 'blob', // This is important if you're downloading a file
+      });
+  
+      // Create a URL for the file download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `course_report_${courseId}.pdf`); // Set the file name
+      document.body.appendChild(link);
+      link.click(); // Trigger the download
+      document.body.removeChild(link); // Clean up the link element
+  
+      console.log('Download successful');
+    } catch (error) {
+      console.error('Error downloading the report:', error);
+      // Handle the error
+    }
+  };
+
     return (
         <div className="syllabusEntryPageContainer">
             <ToastContainer/>
@@ -301,7 +331,7 @@ useEffect(()=>{
                                             <p>{course.course_code}</p>
                                             <p>{course.course_name}</p>
                                         </div>
-                                        <div className="icons">
+                                        <div onClick={()=>{handleCourseDownload(course.id)}} className="icons">
                                             <Download/>
                                             </div>
                                     </div>

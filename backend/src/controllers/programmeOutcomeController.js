@@ -17,7 +17,7 @@ exports.getProgrammeOutcomeById = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM master_programme_outcome WHERE regulation = ?', [id]);
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'Programme outcome not found' });
+            return res.status(204).json(rows,{ message: 'Programme outcome not found' });
         }
         res.json(rows);
     } catch (error) {

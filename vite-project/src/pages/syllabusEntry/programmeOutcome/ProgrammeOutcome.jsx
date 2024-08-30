@@ -57,7 +57,10 @@ const ProgrammeOutcome = ({ courseId, regulation }) => {
             const response = await axios.get(`${apiHost}/course-po-mappings/${course_outcome}`, {
                 headers: { auth: cookies.auth }
             });
+            if(response.data){
             setMappingData(response.data);
+                
+            }
         } catch (error) {
             console.error('Error fetching CO-PO mappings:', error);
         }
@@ -120,7 +123,7 @@ const ProgrammeOutcome = ({ courseId, regulation }) => {
                                 <tr key={coData.id}>
                                     <td>{`CO${coIndex + 1}`}</td>
                                     {programmeOutcomes.map((poData, poIndex) => {
-                                        const mapping = mappingData.find(
+                                        const mapping = mappingData?.find(
                                             entry => entry.course_outcome === coData.id && entry.po === poData.id
                                         );
 

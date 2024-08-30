@@ -36,12 +36,14 @@ const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
   const fetchProgrammeSpecificOutcomes = async (department) => {
     try {
       const response = await axios.get(
-        `${apiHost}/programme-specific-outcomes/${department}`,
+        `${apiHost}/programme-specific-outcomes/${department}/${regulation}`,
         {
           headers: { auth: cookies.auth },
         }
       );
-      setProgrammeSpecificOutcomes(response.data);
+      if(response.data){
+        setProgrammeSpecificOutcomes(response.data);
+      }
     } catch (error) {
       console.error("Error fetching programme-specific outcomes:", error);
     }
@@ -89,25 +91,40 @@ const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
 
   // Handle add/update PSO mapping
   const handlePSOChange = (outcomeIndex, psoId, level) => {
+    // Ensure the outcomeIndex is within bounds
+    if (outcomeIndex < 0 || outcomeIndex >= courseOutcomes.length) {
+      console.error('Invalid outcomeIndex:', outcomeIndex);
+      return;
+    }
+  
+    // Create a copy of programmeSpecificOutcomesMapping
     const updatedMapping = [...programmeSpecificOutcomesMapping];
-    const existingMappingIndex = updatedMapping[outcomeIndex]?.findIndex(
+  
+    // Initialize the array at outcomeIndex if it does not exist or is not an array
+    if (!Array.isArray(updatedMapping[outcomeIndex])) {
+      updatedMapping[outcomeIndex] = [];
+    }
+  
+    // Find the existing mapping index
+    const existingMappingIndex = updatedMapping[outcomeIndex].findIndex(
       (mapping) => mapping.pso === psoId
     );
-
+  
     if (existingMappingIndex !== -1) {
       // Update existing mapping
       updatedMapping[outcomeIndex][existingMappingIndex].level = level;
     } else {
       // Add new mapping
-      if (!updatedMapping[outcomeIndex]) updatedMapping[outcomeIndex] = [];
       updatedMapping[outcomeIndex].push({
         course_outcome: courseOutcomes[outcomeIndex].id,
         pso: psoId,
         level: level,
       });
     }
+  
     setProgrammeSpecificOutcomesMapping(updatedMapping);
   };
+  
 
   // Handle save PSO mappings
   const saveProgrammeSpecificOutcomesMapping = async () => {
@@ -190,9 +207,10 @@ const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
                       style={{ backgroundColor: "white" }}
                       type="number"
                       value={
-                        programmeSpecificOutcomesMapping[i]?.find(
+                        Array.isArray(programmeSpecificOutcomesMapping[i])?programmeSpecificOutcomesMapping[i].find(
                           (mapping) => mapping.pso === pso.id
                         )?.level || ""
+                        :""
                       }
                       onChange={(e) =>
                         handlePSOChange(i, pso.id, e.target.value)
