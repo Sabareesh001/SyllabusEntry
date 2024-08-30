@@ -191,8 +191,8 @@ const ProgrammeSpecificOutcome = ({ courseId, department, regulation }) => {
           <thead>
             <tr>
               <th>CO. No.</th>
-              {programmeSpecificOutcomes.map((outcome) => (
-                <th key={outcome.id}>{outcome.programme_specific_outcome}</th>
+              {programmeSpecificOutcomes.map((outcome,i) => (
+                <th key={outcome.id}>{`PSO`+(i+1)}</th>
               ))}
             </tr>
           </thead>

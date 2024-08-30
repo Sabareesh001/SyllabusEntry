@@ -4,7 +4,7 @@ const axios = require('axios')
 const apiHost = `http://localhost:3000`
 exports.getPDF = async(req, res) => {
     // Example JSON data (this could come from a request or database)
-    const {courseId,regulationId} = req.query
+    const {courseId,regulationId,departmentId} = req.query
     let courseData = {
         "course": {
             "code": "22EE504",
@@ -125,7 +125,7 @@ exports.getPDF = async(req, res) => {
         ]
     };
     try {
-        const response = await axios.get(`${apiHost}/reportData/${courseId}/${regulationId}`);
+        const response = await axios.get(`${apiHost}/reportData/${courseId}/${regulationId}/${departmentId}`);
         if (response.status === 210) {
             res.status(500).json({ message: "No Sufficient Data" });
             return; // Exit the function to prevent further processing
@@ -226,7 +226,7 @@ exports.getPDF = async(req, res) => {
         
                 pageContent.push({
                     table: {
-                        widths: Array(matrixHeader.length).fill(`${Math.round(100 / (matrixHeader.length+1) )}%`),
+                        widths: Array(matrixHeader?.length).fill(`${Math.round(100 / (matrixHeader?.length+1) )}%`),
                         body: [matrixHeader, ...matrixBody]
                     },
                     layout: {
@@ -305,7 +305,7 @@ exports.getPDF = async(req, res) => {
                 layout: {
                     hLineWidth: function (i, node) {
                         // Hide the bottom border only
-                        return (i === node.table.body.length) ? 0 : 1;
+                        return (i === node.table.body?.length) ? 0 : 1;
                     },
                     vLineWidth: function (i, node) {
                         return 1; // Vertical line thickness
@@ -349,7 +349,7 @@ exports.getPDF = async(req, res) => {
 };
 
 exports.getData = async (req,res) =>{
-    const { courseId, regulationId } = req.params;
+    const { courseId, regulationId,departmentId} = req.params;
     try {
       // Fetch Course Details
       const courseDetails = await axios.get(`${apiHost}/coursesById?id=${courseId}`);
@@ -363,8 +363,7 @@ exports.getData = async (req,res) =>{
       const programmeOutcomes = await axios.get(`${apiHost}/programme-outcomes/${regulationId}`);
       const outcomes = programmeOutcomes.data;
     
-      // Fetch Programme-Specific Outcomes
-      const departmentId = 1;
+
       const programmeSpecificOutcomes = await axios.get(`${apiHost}/programme-specific-outcomes/${departmentId}/${regulationId}`);
       const specificOutcomes = programmeSpecificOutcomes.data;
     

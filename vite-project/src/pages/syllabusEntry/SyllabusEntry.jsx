@@ -237,7 +237,7 @@ useEffect(()=>{
     try {
       // Make the request to the backend API
       const response = await axios.get(`${apiHost}/report`, {
-        params: { courseId: courseId ,regulationId : regulation.value}, // Pass the courseId as a query parameter
+        params: { courseId: courseId ,regulationId : regulation.value,departmentId:department.value}, // Pass the courseId as a query parameter
         responseType: 'blob', // This is important if you're downloading a file
       });
   
