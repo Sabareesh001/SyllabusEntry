@@ -268,6 +268,8 @@ useEffect(()=>{
                                 options={regulationOptions}
                                 value={regulation}
                                 onChange={setRegulation}
+                                menuPortalTarget={document.body} 
+    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                 placeholder={"Regulation"}
                             />
                             <div onClick={() => setRegulationModalOpen(true)} className="newRegulationContainer">
@@ -278,6 +280,8 @@ useEffect(()=>{
                             <Select
                                 options={semesterOptions}
                                 placeholder={"Semester"}
+                                menuPortalTarget={document.body} 
+    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                 value={semester}
                                 onChange={setSemester}
                             />
@@ -286,6 +290,8 @@ useEffect(()=>{
                             <Select
                                 options={departmentOptions}
                                 placeholder={"Department"}
+                                menuPortalTarget={document.body} 
+    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                 value={department}
                                 onChange={setDepartment}
                             />

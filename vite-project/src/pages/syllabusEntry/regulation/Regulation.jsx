@@ -41,7 +41,7 @@ const RegulationModal = ({ isRegulationModalOpen, setRegulationModalOpen }) => {
     return (
         <>
             <StyledModal
-            
+                submitAction={handleCreateRegulation}
                 title={"Create New Regulation"}
                 setOpen={setRegulationModalOpen}
                 open={isRegulationModalOpen}
@@ -60,7 +60,7 @@ const RegulationModal = ({ isRegulationModalOpen, setRegulationModalOpen }) => {
 />
                             </LocalizationProvider>
                         </div>
-                        <button onClick={handleCreateRegulation}>Submit</button>
+                       
                     </div>
                 }
             />
